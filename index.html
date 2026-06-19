@@ -2626,9 +2626,23 @@ const AGHANIM_UPGRADES = {
   "Bounty Hunter":      { ability: "Shuriken Toss",     desc: "Shuriken Toss bounces up to twice between Tracked heroes. Increases stun duration." },
 };
 
+let SPELL_OVERRIDES = {};
+
 function renderAbility(ability, heroName, isUlt) {
   const iconUrl = getSpellIcon(heroName, ability.name);
-  const statsHTML = ability.stats && ability.stats.length ? `<div class="spell-stats">${ability.stats.join('')}</div>` : '';
+  let stats = ability.stats || [];
+  const heroOvr = SPELL_OVERRIDES[heroName];
+  if (heroOvr && heroOvr[ability.name]) {
+    const ovr = heroOvr[ability.name];
+    stats = stats.map(p => {
+      for (const [lbl, val] of Object.entries(ovr)) {
+        const elbl = lbl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        p = p.replace(new RegExp(`(<b>${elbl}<\\/b> )([^<]+)`), `$1${val}`);
+      }
+      return p;
+    });
+  }
+  const statsHTML = stats.length ? `<div class="spell-stats">${stats.join('')}</div>` : '';
   const aghanim = AGHANIM_UPGRADES[heroName];
   const aghanimHTML = (aghanim && aghanim.ability === ability.name)
     ? `<div class="aghanim-upgrade"><img class="agh-icon" src="https://cdn.w3dota.com/items/BTNINV_Wand_05.gif" alt="Aghanim's Scepter"><div class="agh-text"><div class="agh-label">Aghanim's Scepter</div><div class="agh-desc">${aghanim.desc}</div></div></div>`
@@ -2848,6 +2862,7 @@ document.getElementById('search').addEventListener('input', e => {
   _searchTimer = setTimeout(render, 120);
 });
 
+fetch('/spell_overrides.json?t='+Date.now()).then(r=>r.json()).then(o=>{SPELL_OVERRIDES=o;initGrid();render();}).catch(()=>{});
 initGrid();
 
 const _urlParams = new URLSearchParams(window.location.search);
