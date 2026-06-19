@@ -2631,11 +2631,14 @@ let SPELL_OVERRIDES = {};
 function renderAbility(ability, heroName, isUlt) {
   const iconUrl = getSpellIcon(heroName, ability.name);
   let stats = ability.stats || [];
+  let abDesc = ability.desc;
   const heroOvr = SPELL_OVERRIDES[heroName];
   if (heroOvr && heroOvr[ability.name]) {
     const ovr = heroOvr[ability.name];
+    if (ovr.desc) abDesc = ovr.desc;
     stats = stats.map(p => {
       for (const [lbl, val] of Object.entries(ovr)) {
+        if (lbl === 'desc') continue;
         const elbl = lbl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         p = p.replace(new RegExp(`(<b>${elbl}<\\/b> )([^<]+)`), `$1${val}`);
       }
@@ -2655,7 +2658,7 @@ function renderAbility(ability, heroName, isUlt) {
       </div>
       <div class="ability-content">
         <div class="ability-name">${isUlt ? '★ ' : ''}${ability.name}</div>
-        <div class="ability-desc">${ability.desc}</div>
+        <div class="ability-desc">${abDesc}</div>
         ${statsHTML}
         ${aghanimHTML}
       </div>

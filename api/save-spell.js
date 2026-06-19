@@ -9,6 +9,7 @@ const ORIGIN = 'https://w3dotawiki.vercel.app';
 const HERO_RE    = /^[A-Za-z0-9 '\-\.]+$/;
 const ABILITY_RE = /^[A-Za-z0-9 '\-\.\(\)!]+$/;
 const SAFE_RE    = /^[^<>"\\]{1,100}$/;
+const DESC_RE    = /^[^<>"\\]{1,600}$/;
 
 async function ghGet(path) {
   const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
@@ -34,11 +35,15 @@ async function ghPut(path, content, sha, msg) {
 
 function applyChanges(overrides, heroName, changes) {
   if (!overrides[heroName]) overrides[heroName] = {};
-  for (const { abilityName, stats } of changes) {
+  for (const { abilityName, stats, desc } of changes) {
     if (!overrides[heroName][abilityName]) overrides[heroName][abilityName] = {};
     Object.assign(overrides[heroName][abilityName], stats);
+    if (desc !== undefined) {
+      if (desc) overrides[heroName][abilityName].desc = desc;
+      else delete overrides[heroName][abilityName].desc;
+    }
     for (const [k, v] of Object.entries(overrides[heroName][abilityName])) {
-      if (v === '') delete overrides[heroName][abilityName][k];
+      if (k !== 'desc' && v === '') delete overrides[heroName][abilityName][k];
     }
     if (!Object.keys(overrides[heroName][abilityName]).length)
       delete overrides[heroName][abilityName];
@@ -78,6 +83,8 @@ export default async function handler(req, res) {
       if (value !== '' && !SAFE_RE.test(value))
         return res.status(400).json({ error: `Invalid value for ${label}` });
     }
+    if (c.desc !== undefined && c.desc !== '' && !DESC_RE.test(c.desc))
+      return res.status(400).json({ error: `Invalid description for ${c.abilityName}` });
   }
 
   try {

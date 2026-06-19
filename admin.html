@@ -300,6 +300,10 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .spell-stat-row.is-changed .spell-stat-input { border-color: var(--changed-border); }
 .spell-stat-base { font-size: .62rem; color: var(--text-dim); }
 .spell-changed-tag { font-size: .65rem; color: var(--gold); font-weight: 600; text-align: right; }
+.spell-desc-section { padding: 10px 14px 6px; border-bottom: 1px solid var(--border); transition: background .1s; }
+.spell-desc-section.is-changed { background: var(--changed-bg); outline: 1px solid var(--changed-border); }
+.spell-desc-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.spell-desc-input { resize: vertical; min-height: 54px; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -693,9 +697,11 @@ let allHeroes = [];
 let pickerOpen = false;
 
 // ── Spell editor state ─────────────────────────────────────
-let spellAbilities    = [];  // [{ name, stats: [{type,label,value}] }]
+let spellAbilities    = [];  // [{ name, desc, stats: [{type,label,value}] }]
 let spellCurrentValues = {}; // abilityName → label → live value
 let spellEditValues    = {}; // abilityName → label → edited value
+let spellCurrentDesc   = {}; // abilityName → current live desc
+let spellEditDesc      = {}; // abilityName → edited desc
 let spellOverridesData = {};
 let spellStatsCache    = {};
 
@@ -757,7 +763,7 @@ async function logout() {
 function backToMain() {
   selectedHero = null;
   currentAbilityNames = [null,null,null,null]; currentAbilityIcons = [null,null,null,null];
-  spellAbilities = []; spellCurrentValues = {}; spellEditValues = {};
+  spellAbilities = []; spellCurrentValues = {}; spellEditValues = {}; spellCurrentDesc = {}; spellEditDesc = {};
   document.getElementById('picker-portrait-img').style.display = 'none';
   document.getElementById('picker-label').textContent = '— select a hero —';
   document.getElementById('hero-banner').style.display = 'none';
@@ -1057,10 +1063,11 @@ async function loadAbilityStatData(heroName) {
   for (const line of m[1].split('\n')) {
     const nameM = line.match(/name:"([^"]+)"/);
     if (!nameM) continue;
+    const descM = line.match(/desc:"([^"]+)"/);
     const stats = [...line.matchAll(/pill\("([^"]+)","([^"]+)","([^"]+)"\)/g)].map(pm => ({
       type: pm[1], label: pm[2], value: pm[3],
     }));
-    abilities.push({ name: nameM[1], stats });
+    abilities.push({ name: nameM[1], desc: descM ? descM[1] : '', stats });
   }
   return (spellStatsCache[heroName] = abilities);
 }
@@ -1077,8 +1084,8 @@ function renderSpellEditor(heroName) {
   const heroOvr = spellOverridesData[heroName] || {};
 
   // Build current/edit state
-  spellCurrentValues = {};
-  spellEditValues = {};
+  spellCurrentValues = {}; spellEditValues = {};
+  spellCurrentDesc   = {}; spellEditDesc   = {};
   for (const ab of spellAbilities) {
     spellCurrentValues[ab.name] = {};
     spellEditValues[ab.name] = {};
@@ -1087,30 +1094,46 @@ function renderSpellEditor(heroName) {
       spellCurrentValues[ab.name][st.label] = live;
       spellEditValues[ab.name][st.label] = live;
     }
+    const liveDesc = heroOvr[ab.name]?.desc ?? ab.desc;
+    spellCurrentDesc[ab.name] = liveDesc;
+    spellEditDesc[ab.name]    = liveDesc;
   }
 
   let html = '<div class="spell-abilities-grid">';
   for (const [ai, ab] of spellAbilities.entries()) {
-    if (!ab.stats.length) continue;
     const icon = getSpellIconAdmin(heroName, ab.name);
+    const liveDesc = spellCurrentDesc[ab.name] ?? '';
+    const isDescOvr = heroOvr[ab.name]?.desc !== undefined;
     html += `<div class="spell-ability-card">`;
     html += `<div class="spell-ability-header">`;
     if (icon) html += `<img class="spell-ability-icon" src="${esc(icon)}" alt="" onerror="this.style.display='none'">`;
     html += `<span class="spell-ability-name">${esc(ab.name)}</span></div>`;
-    html += `<div class="spell-stat-rows">`;
-    for (const [si, st] of ab.stats.entries()) {
-      const liveVal = spellCurrentValues[ab.name][st.label];
-      const isOvr = heroOvr[ab.name]?.[st.label] !== undefined;
-      html += `<div class="spell-stat-row" id="spell-row-${ai}-${si}">`;
-      html += `<span class="spell-stat-label">${esc(st.label)}</span>`;
-      html += `<div class="spell-stat-input-wrap">`;
-      html += `<input class="spell-stat-input" value="${esc(liveVal)}" oninput="spellInputChanged(${ai},${si},this.value)">`;
-      if (isOvr) html += `<span class="spell-stat-base">base: ${esc(st.value)}</span>`;
-      html += `</div>`;
-      html += `<span class="spell-changed-tag" id="spell-tag-${ai}-${si}" style="display:none">changed</span>`;
+
+    // Description section
+    html += `<div class="spell-desc-section" id="spell-row-${ai}-desc">`;
+    html += `<div class="spell-desc-label-row"><span class="spell-stat-label">Description</span><span class="spell-changed-tag" id="spell-tag-${ai}-desc" style="display:none">changed</span></div>`;
+    html += `<div class="spell-stat-input-wrap">`;
+    html += `<textarea class="spell-stat-input spell-desc-input" rows="2" oninput="spellDescChanged(${ai},this.value)">${esc(liveDesc)}</textarea>`;
+    if (isDescOvr) html += `<span class="spell-stat-base">base: ${esc(ab.desc)}</span>`;
+    html += `</div></div>`;
+
+    if (ab.stats.length) {
+      html += `<div class="spell-stat-rows">`;
+      for (const [si, st] of ab.stats.entries()) {
+        const liveVal = spellCurrentValues[ab.name][st.label];
+        const isOvr = heroOvr[ab.name]?.[st.label] !== undefined;
+        html += `<div class="spell-stat-row" id="spell-row-${ai}-${si}">`;
+        html += `<span class="spell-stat-label">${esc(st.label)}</span>`;
+        html += `<div class="spell-stat-input-wrap">`;
+        html += `<input class="spell-stat-input" value="${esc(liveVal)}" oninput="spellInputChanged(${ai},${si},this.value)">`;
+        if (isOvr) html += `<span class="spell-stat-base">base: ${esc(st.value)}</span>`;
+        html += `</div>`;
+        html += `<span class="spell-changed-tag" id="spell-tag-${ai}-${si}" style="display:none">changed</span>`;
+        html += `</div>`;
+      }
       html += `</div>`;
     }
-    html += `</div></div>`;
+    html += `</div>`;
   }
   html += '</div>';
   html += '<div class="diff-summary" id="spell-diff" style="margin-top:14px"><div class="diff-title">No changes yet</div><div class="diff-list"><span class="no-changes">Edit values above — changes will appear here</span></div></div>';
@@ -1132,9 +1155,24 @@ function spellInputChanged(ai, si, value) {
   updateSpellSaveBtn();
 }
 
+function spellDescChanged(ai, value) {
+  const ab = spellAbilities[ai]; if (!ab) return;
+  spellEditDesc[ab.name] = value;
+  const changed = value !== (spellCurrentDesc[ab.name] ?? '');
+  const rowEl = document.getElementById(`spell-row-${ai}-desc`);
+  const tagEl = document.getElementById(`spell-tag-${ai}-desc`);
+  if (rowEl) rowEl.classList.toggle('is-changed', changed);
+  if (tagEl) tagEl.style.display = changed ? '' : 'none';
+  updateSpellDiff();
+  updateSpellSaveBtn();
+}
+
 function updateSpellDiff() {
   const diffs = [];
   for (const ab of spellAbilities) {
+    const descEdited = spellEditDesc[ab.name] ?? '';
+    const descOrig   = spellCurrentDesc[ab.name] ?? '';
+    if (descEdited !== descOrig) diffs.push({ ability: ab.name, label: 'Description', from: descOrig.slice(0,50)+(descOrig.length>50?'…':''), to: descEdited.slice(0,50)+(descEdited.length>50?'…':'') });
     for (const st of ab.stats) {
       const edited = spellEditValues[ab.name]?.[st.label];
       const orig = spellCurrentValues[ab.name]?.[st.label];
@@ -1152,9 +1190,11 @@ function updateSpellDiff() {
 }
 
 function hasSpellChanges() {
-  for (const ab of spellAbilities)
+  for (const ab of spellAbilities) {
+    if ((spellEditDesc[ab.name]??'') !== (spellCurrentDesc[ab.name]??'')) return true;
     for (const st of ab.stats)
       if ((spellEditValues[ab.name]?.[st.label]??'') !== (spellCurrentValues[ab.name]?.[st.label]??'')) return true;
+  }
   return false;
 }
 function updateSpellSaveBtn() { const b = document.getElementById('spell-save-btn'); if (b) b.disabled = !hasSpellChanges(); }
@@ -1174,7 +1214,14 @@ async function saveSpellChanges() {
       if (edited !== undefined && edited !== (spellCurrentValues[ab.name]?.[st.label] ?? ''))
         changedStats[st.label] = edited;
     }
-    if (Object.keys(changedStats).length) changes.push({ abilityName: ab.name, stats: changedStats });
+    const descEdited  = spellEditDesc[ab.name]  ?? '';
+    const descCurrent = spellCurrentDesc[ab.name] ?? '';
+    const descChanged = descEdited !== descCurrent;
+    if (Object.keys(changedStats).length || descChanged) {
+      const c = { abilityName: ab.name, stats: changedStats };
+      if (descChanged) c.desc = descEdited;
+      changes.push(c);
+    }
   }
   if (!changes.length) { btn.disabled = false; status.textContent = ''; return; }
 
@@ -1189,10 +1236,15 @@ async function saveSpellChanges() {
     }
     // Update local state so diff is correct after save
     if (!spellOverridesData[selectedHero]) spellOverridesData[selectedHero] = {};
-    for (const { abilityName, stats } of changes) {
+    for (const { abilityName, stats, desc } of changes) {
       if (!spellOverridesData[selectedHero][abilityName]) spellOverridesData[selectedHero][abilityName] = {};
       Object.assign(spellOverridesData[selectedHero][abilityName], stats);
       Object.assign(spellCurrentValues[abilityName], stats);
+      if (desc !== undefined) {
+        if (desc) spellOverridesData[selectedHero][abilityName].desc = desc;
+        else delete spellOverridesData[selectedHero][abilityName].desc;
+        spellCurrentDesc[abilityName] = desc;
+      }
     }
     status.className = 'save-status ok';
     status.textContent = '✓ Saved! Redeploying (~30s)…';
