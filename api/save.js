@@ -145,7 +145,7 @@ export default async function handler(req, res) {
     if (HOOK) fetch(HOOK, { method: 'POST' }).catch(() => {});
     return res.status(200).json({ ok: true });
 
-  } catch {
-    return res.status(500).json({ error: 'Internal error — please try again' });
+  } catch (e) {
+    return res.status(500).json({ error: `Internal error: ${e.message}` });
   }
 }
