@@ -13,84 +13,39 @@
   --border: rgba(110,75,140,0.28);
   --border-gold: rgba(201,168,76,0.4);
   --gold: #c9a84c;
-  --gold-glow: rgba(201,168,76,0.15);
+  --gold-glow: rgba(201,168,76,0.12);
   --text: #cbbddb;
   --text-dim: #7a6a8a;
   --text-bright: #e8daf8;
-  --q: #3dd5dc;
-  --w: #5b8ee6;
-  --e: #4cc87a;
-  --r: #c9a84c;
-  --s: #52506a;
-  --changed-bg: rgba(201,168,76,0.08);
-  --changed-border: rgba(201,168,76,0.35);
-  --success: #4cc87a;
-  --error: #e06060;
+  --q: #3dd5dc; --w: #5b8ee6; --e: #4cc87a; --r: #c9a84c; --s: #52506a;
+  --changed-bg: rgba(201,168,76,0.07);
+  --changed-border: rgba(201,168,76,0.32);
+  --success: #4cc87a; --error: #e06060;
   --radius: 6px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  min-height: 100vh;
-}
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; min-height: 100vh; }
 
 /* ── GATE ── */
-#gate {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-}
+#gate { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
 .gate-card {
-  background: var(--surface);
-  border: 1px solid var(--border-gold);
-  border-radius: 12px;
-  padding: 48px 40px;
-  width: 100%;
-  max-width: 380px;
-  text-align: center;
+  background: var(--surface); border: 1px solid var(--border-gold); border-radius: 12px;
+  padding: 48px 40px; width: 100%; max-width: 380px; text-align: center;
   box-shadow: 0 0 60px rgba(201,168,76,0.08);
 }
 .gate-icon { font-size: 2.4rem; margin-bottom: 16px; }
-.gate-card h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 1.25rem;
-  color: var(--gold);
-  margin-bottom: 6px;
-  letter-spacing: .05em;
-}
+.gate-card h1 { font-family: 'Cinzel', serif; font-size: 1.25rem; color: var(--gold); margin-bottom: 6px; letter-spacing: .05em; }
 .gate-card p { color: var(--text-dim); font-size: .85rem; margin-bottom: 28px; }
 .gate-card input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-bright);
-  font-family: 'Inter', sans-serif;
-  font-size: .9rem;
-  padding: 10px 14px;
-  outline: none;
-  margin-bottom: 12px;
-  transition: border-color .15s;
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text-bright); font-family: 'Inter', sans-serif;
+  font-size: .9rem; padding: 10px 14px; outline: none; margin-bottom: 12px; transition: border-color .15s;
 }
 .gate-card input:focus { border-color: var(--gold); }
 .gate-card button {
-  width: 100%;
-  background: linear-gradient(135deg, #4a3510, #8a6a28, #c9a84c, #8a6a28, #4a3510);
-  border: none;
-  border-radius: var(--radius);
-  color: #0a0a12;
-  font-family: 'Cinzel', serif;
-  font-size: .9rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  padding: 11px;
-  cursor: pointer;
-  transition: opacity .15s;
+  width: 100%; background: linear-gradient(135deg,#4a3510,#8a6a28,#c9a84c,#8a6a28,#4a3510);
+  border: none; border-radius: var(--radius); color: #0a0a12; font-family: 'Cinzel', serif;
+  font-size: .9rem; font-weight: 700; letter-spacing: .06em; padding: 11px; cursor: pointer; transition: opacity .15s;
 }
 .gate-card button:hover { opacity: .85; }
 .err-msg { color: var(--error); font-size: .8rem; margin-top: 10px; min-height: 18px; }
@@ -98,126 +53,109 @@ body {
 /* ── APP SHELL ── */
 #app { display: none; }
 .app-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 32px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  height: 54px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 32px; display: flex; align-items: center; gap: 16px; height: 54px;
 }
-.app-header h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 1rem;
-  color: var(--gold);
-  letter-spacing: .06em;
-  flex: 1;
-}
+.app-header h1 { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold); letter-spacing: .06em; flex: 1; }
 .logout-btn {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: .78rem;
-  padding: 5px 12px;
+  background: none; border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text-dim); cursor: pointer; font-size: .78rem; padding: 5px 12px;
   transition: border-color .15s, color .15s;
 }
 .logout-btn:hover { border-color: var(--gold); color: var(--gold); }
-
-.app-body { max-width: 860px; margin: 0 auto; padding: 32px 24px 60px; }
-
-/* ── SECTION HEADING ── */
+.app-body { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
 .section-heading {
-  font-family: 'Cinzel', serif;
-  font-size: .7rem;
-  color: var(--text-dim);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  margin-bottom: 14px;
+  font-family: 'Cinzel', serif; font-size: .7rem; color: var(--text-dim);
+  letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px;
 }
 
-/* ── HERO SELECTOR ── */
-.hero-selector-row { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; }
-.hero-selector-row label { color: var(--text-dim); font-size: .82rem; white-space: nowrap; }
-.hero-select {
-  flex: 1;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-bright);
-  font-family: 'Inter', sans-serif;
-  font-size: .9rem;
-  padding: 9px 12px;
-  outline: none;
-  cursor: pointer;
-  transition: border-color .15s;
+/* ── CUSTOM HERO PICKER ── */
+.hero-selector-row { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; }
+.hero-selector-row > label { color: var(--text-dim); font-size: .82rem; white-space: nowrap; }
+.hero-picker { position: relative; flex: 1; }
+.picker-trigger {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 8px 12px; cursor: pointer;
+  user-select: none; transition: border-color .15s;
 }
-.hero-select:focus { border-color: var(--gold); }
+.picker-trigger:hover, .picker-trigger.open { border-color: var(--gold); }
+#picker-portrait-img { width: 40px; height: 34px; object-fit: cover; border-radius: 4px; flex-shrink: 0; display: none; border: 1px solid var(--border); }
+.picker-label { flex: 1; color: var(--text-bright); font-size: .9rem; }
+.picker-arrow { color: var(--text-dim); font-size: .75rem; transition: transform .2s; }
+.picker-trigger.open .picker-arrow { transform: rotate(180deg); }
+.picker-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 200;
+  background: var(--surface); border: 1px solid var(--border-gold);
+  border-radius: 8px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.7); display: none;
+}
+.picker-dropdown.open { display: block; }
+.picker-search {
+  width: 100%; background: var(--surface2); border: none; border-bottom: 1px solid var(--border);
+  color: var(--text-bright); font-size: .85rem; padding: 10px 14px; outline: none;
+  font-family: 'Inter', sans-serif;
+}
+.picker-list { max-height: 260px; overflow-y: auto; }
+.picker-list::-webkit-scrollbar { width: 4px; }
+.picker-list::-webkit-scrollbar-thumb { background: var(--border-gold); border-radius: 4px; }
+.picker-item {
+  display: flex; align-items: center; gap: 10px; padding: 7px 14px;
+  cursor: pointer; transition: background .1s;
+}
+.picker-item:hover, .picker-item.is-active { background: var(--gold-glow); }
+.picker-item img { width: 40px; height: 34px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid var(--border); }
+.picker-item-name { color: var(--text); font-size: .85rem; }
+
+/* ── HERO BANNER ── */
+.hero-banner {
+  display: none; align-items: center; gap: 22px;
+  background: linear-gradient(120deg, var(--surface) 0%, #1c1430 100%);
+  border: 1px solid var(--border-gold); border-radius: 10px;
+  padding: 18px 22px; margin-bottom: 24px;
+  box-shadow: 0 0 40px rgba(201,168,76,.06);
+}
+.banner-portrait {
+  width: 108px; height: 93px; object-fit: cover; border-radius: 7px;
+  border: 2px solid var(--border-gold); flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,.5);
+}
+.banner-info { flex: 1; min-width: 0; }
+.banner-hero-name {
+  font-family: 'Cinzel', serif; font-size: 1.45rem; color: var(--gold);
+  letter-spacing: .04em; margin-bottom: 12px;
+}
+.banner-abilities { display: flex; gap: 8px; flex-wrap: wrap; }
+.banner-ability {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 5px 10px;
+}
+.banner-ability img { width: 24px; height: 24px; border-radius: 3px; object-fit: cover; flex-shrink: 0; }
+.banner-ability-key { font-size: .6rem; font-weight: 700; letter-spacing: .05em; }
+.key-q { color: var(--q); } .key-w { color: var(--w); } .key-e { color: var(--e); } .key-r { color: var(--r); }
+.banner-ability-name { font-size: .72rem; color: var(--text); max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ── CARD ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-.card-header {
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.card-title {
-  font-family: 'Cinzel', serif;
-  font-size: .72rem;
-  color: var(--gold);
-  letter-spacing: .1em;
-}
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+.card-header { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+.card-title { font-family: 'Cinzel', serif; font-size: .72rem; color: var(--gold); letter-spacing: .1em; }
 .card-label-badge {
-  background: rgba(201,168,76,0.12);
-  border: 1px solid rgba(201,168,76,0.25);
-  border-radius: 4px;
-  color: var(--gold);
-  font-size: .68rem;
-  font-weight: 600;
-  letter-spacing: .06em;
-  padding: 2px 8px;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 4px; color: var(--gold); font-size: .68rem; font-weight: 600;
+  letter-spacing: .06em; padding: 2px 8px;
 }
 .card-body { padding: 14px 16px; }
 
-/* ── SKILL STRIP (current view) ── */
-.skill-strip {
-  display: flex;
-  gap: 4px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
+/* ── SKILL STRIP ── */
+.skill-strip { display: flex; gap: 4px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
 .skill-strip::-webkit-scrollbar { height: 4px; }
-.skill-strip::-webkit-scrollbar-track { background: #0a0a12; }
 .skill-strip::-webkit-scrollbar-thumb { background: var(--border-gold); border-radius: 4px; }
-.strip-cell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  flex-shrink: 0;
-}
+.strip-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
 .strip-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .02em;
+  width: 32px; height: 32px; border-radius: 5px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .72rem; font-weight: 700;
 }
+.strip-badge img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .strip-lvl { font-size: .6rem; color: var(--text-dim); }
 .badge-q { background: rgba(61,213,220,.15); border: 1px solid rgba(61,213,220,.4); color: var(--q); }
 .badge-w { background: rgba(91,142,230,.15); border: 1px solid rgba(91,142,230,.4); color: var(--w); }
@@ -225,134 +163,83 @@ body {
 .badge-r { background: rgba(201,168,76,.18); border: 1px solid rgba(201,168,76,.5); color: var(--r); }
 .badge-s { background: rgba(82,80,106,.2); border: 1px solid rgba(82,80,106,.4); color: var(--s); }
 
-/* ── BUILD TABS (for multi-build) ── */
+/* ── BUILD TABS ── */
 .build-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
 .build-tab {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-dim);
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: .8rem;
-  font-weight: 500;
-  padding: 6px 14px;
-  transition: all .15s;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text-dim); cursor: pointer; font-family: 'Inter', sans-serif;
+  font-size: .8rem; font-weight: 500; padding: 6px 14px; transition: all .15s;
 }
 .build-tab:hover { border-color: var(--gold); color: var(--text); }
 .build-tab.active { background: var(--gold-glow); border-color: var(--gold); color: var(--gold); font-weight: 600; }
 .add-build-btn {
-  background: none;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: .8rem;
-  padding: 6px 14px;
-  transition: all .15s;
+  background: none; border: 1px dashed var(--border); border-radius: var(--radius);
+  color: var(--text-dim); cursor: pointer; font-size: .8rem; padding: 6px 14px; transition: all .15s;
 }
 .add-build-btn:hover { border-color: var(--gold); color: var(--gold); }
 
 /* ── EDITOR GRID ── */
-.editor-grid { display: flex; flex-direction: column; gap: 3px; }
+.editor-grid { display: flex; flex-direction: column; gap: 2px; }
 .editor-row {
   display: grid;
-  grid-template-columns: 32px 36px 12px 1fr 80px;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 8px;
-  border-radius: 5px;
-  transition: background .1s;
+  grid-template-columns: 32px 40px 14px 1fr 110px;
+  align-items: center; gap: 8px; padding: 4px 8px; border-radius: 5px; transition: background .1s;
 }
-.editor-row.is-changed {
-  background: var(--changed-bg);
-  outline: 1px solid var(--changed-border);
-}
+.editor-row.is-changed { background: var(--changed-bg); outline: 1px solid var(--changed-border); }
 .editor-row:not(.is-changed):hover { background: rgba(255,255,255,.025); }
 .row-lvl { color: var(--text-dim); font-size: .72rem; font-weight: 600; text-align: center; }
 .row-current { display: flex; justify-content: center; }
 .row-arrow { color: var(--text-dim); font-size: .75rem; text-align: center; }
 .row-options { display: flex; gap: 3px; }
 .opt-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: .72rem;
-  font-weight: 700;
-  height: 26px;
-  width: 30px;
-  transition: all .12s;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 5px;
+  color: var(--text-dim); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  font-size: .6rem; font-weight: 700; height: 42px; flex: 1;
+  padding: 3px 2px; transition: all .12s; min-width: 0;
 }
+.opt-btn img { width: 20px; height: 20px; border-radius: 3px; object-fit: cover; flex-shrink: 0; }
 .opt-btn:hover { border-color: rgba(201,168,76,.4); color: var(--text); }
-.opt-btn.sel-q { background: rgba(61,213,220,.15); border-color: rgba(61,213,220,.5); color: var(--q); }
-.opt-btn.sel-w { background: rgba(91,142,230,.15); border-color: rgba(91,142,230,.5); color: var(--w); }
-.opt-btn.sel-e { background: rgba(76,200,122,.15); border-color: rgba(76,200,122,.5); color: var(--e); }
-.opt-btn.sel-r { background: rgba(201,168,76,.18); border-color: rgba(201,168,76,.55); color: var(--r); }
-.opt-btn.sel-s { background: rgba(82,80,106,.2); border-color: rgba(82,80,106,.5); color: var(--s); }
-.row-changed-tag { font-size: .68rem; color: var(--gold); font-weight: 600; text-align: right; }
-.row-changed-tag.was { color: var(--text-dim); }
+.opt-btn.sel-q { background: rgba(61,213,220,.12); border-color: rgba(61,213,220,.5); color: var(--q); }
+.opt-btn.sel-w { background: rgba(91,142,230,.12); border-color: rgba(91,142,230,.5); color: var(--w); }
+.opt-btn.sel-e { background: rgba(76,200,122,.12); border-color: rgba(76,200,122,.5); color: var(--e); }
+.opt-btn.sel-r { background: rgba(201,168,76,.15); border-color: rgba(201,168,76,.55); color: var(--r); }
+.opt-btn.sel-s { background: rgba(82,80,106,.18); border-color: rgba(82,80,106,.5); color: var(--s); }
+.row-changed-tag { font-size: .65rem; color: var(--gold); font-weight: 600; text-align: right; line-height: 1.4; }
+.diff-from { text-decoration: line-through; opacity: .5; }
 
 /* ── DIFF SUMMARY ── */
-.diff-summary {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-top: 16px;
-  padding: 12px 16px;
-}
+.diff-summary { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 16px; padding: 12px 16px; }
 .diff-title { font-size: .75rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
-.diff-list { display: flex; flex-direction: column; gap: 4px; }
+.diff-list { display: flex; flex-direction: column; gap: 5px; }
 .diff-item { font-size: .78rem; color: var(--text-dim); }
 .diff-item strong { color: var(--text); }
-.diff-from { text-decoration: line-through; opacity: .6; }
 .diff-to { color: var(--gold); font-weight: 600; }
 .no-changes { font-size: .78rem; color: var(--text-dim); font-style: italic; }
 
 /* ── LABEL EDITOR ── */
-.label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.label-row { display: flex; align-items: center; gap: 8px; margin: 0; flex: 1; margin-left: 10px; }
 .label-row label { font-size: .78rem; color: var(--text-dim); white-space: nowrap; }
 .label-input {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-bright);
-  font-size: .82rem;
-  padding: 6px 10px;
-  outline: none;
-  width: 160px;
-  transition: border-color .15s;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text-bright); font-size: .82rem; padding: 6px 10px; outline: none;
+  width: 160px; transition: border-color .15s;
 }
 .label-input:focus { border-color: var(--gold); }
 .remove-build-btn {
-  background: none;
-  border: 1px solid rgba(224,96,96,.3);
-  border-radius: var(--radius);
-  color: var(--error);
-  cursor: pointer;
-  font-size: .75rem;
-  margin-left: auto;
-  padding: 5px 10px;
-  opacity: .7;
-  transition: all .15s;
+  background: none; border: 1px solid rgba(224,96,96,.3); border-radius: var(--radius);
+  color: var(--error); cursor: pointer; font-size: .75rem; margin-left: auto;
+  padding: 5px 10px; opacity: .7; transition: all .15s;
 }
 .remove-build-btn:hover { opacity: 1; border-color: var(--error); }
 
 /* ── SAVE AREA ── */
 .save-area { margin-top: 28px; display: flex; align-items: center; gap: 14px; }
 .save-btn {
-  background: linear-gradient(135deg, #4a3510, #8a6a28, #c9a84c, #8a6a28, #4a3510);
-  border: none;
-  border-radius: var(--radius);
-  color: #0a0a12;
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  font-size: .82rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  padding: 11px 28px;
-  transition: opacity .15s;
+  background: linear-gradient(135deg,#4a3510,#8a6a28,#c9a84c,#8a6a28,#4a3510);
+  border: none; border-radius: var(--radius); color: #0a0a12; cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: .82rem; font-weight: 700;
+  letter-spacing: .06em; padding: 11px 28px; transition: opacity .15s;
 }
 .save-btn:disabled { opacity: .35; cursor: not-allowed; }
 .save-btn:not(:disabled):hover { opacity: .85; }
@@ -361,19 +248,15 @@ body {
 .save-status.err { color: var(--error); }
 .save-status.loading { color: var(--text-dim); }
 
-/* ── PLACEHOLDER ── */
-.placeholder {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text-dim);
-  font-size: .85rem;
-}
+/* ── MISC ── */
+.placeholder { text-align: center; padding: 48px 20px; color: var(--text-dim); font-size: .85rem; }
 .placeholder span { display: block; font-size: 2rem; margin-bottom: 12px; opacity: .4; }
+.loading-banner { text-align: center; padding: 28px; color: var(--text-dim); font-size: .82rem; }
 </style>
 </head>
 <body>
 
-<!-- ── PASSWORD GATE ── -->
+<!-- ── GATE ── -->
 <div id="gate">
   <div class="gate-card">
     <div class="gate-icon">⚔</div>
@@ -385,22 +268,31 @@ body {
   </div>
 </div>
 
-<!-- ── MAIN APP ── -->
+<!-- ── APP ── -->
 <div id="app">
   <header class="app-header">
     <h1>⚔ W3Dota Wiki — Admin Panel</h1>
     <button class="logout-btn" onclick="logout()">Log out</button>
   </header>
   <div class="app-body">
-
     <p class="section-heading">Skill Builds</p>
 
     <div class="hero-selector-row">
-      <label for="hero-select">Hero</label>
-      <select id="hero-select" class="hero-select">
-        <option value="">— select a hero —</option>
-      </select>
+      <label>Hero</label>
+      <div class="hero-picker" id="hero-picker">
+        <div class="picker-trigger" id="picker-trigger" onclick="togglePicker()">
+          <img id="picker-portrait-img" src="" alt="">
+          <span class="picker-label" id="picker-label">— select a hero —</span>
+          <span class="picker-arrow">▾</span>
+        </div>
+        <div class="picker-dropdown" id="picker-dropdown">
+          <input class="picker-search" id="picker-search" placeholder="Search heroes…" autocomplete="off" oninput="filterPicker(this.value)">
+          <div class="picker-list" id="picker-list"></div>
+        </div>
+      </div>
     </div>
+
+    <div id="hero-banner" class="hero-banner"></div>
 
     <div id="editor-area">
       <div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>
@@ -410,60 +302,194 @@ body {
       <button class="save-btn" id="save-btn" disabled onclick="saveChanges()">Save Changes</button>
       <span class="save-status" id="save-status"></span>
     </div>
-
   </div>
 </div>
 
 <script>
-// ── HTML sanitizer (prevents XSS from injected strings) ───
+// ── Sanitizer ──────────────────────────────────────────────
 function esc(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ── Portrait data (mirrored from index.html) ───────────────
+const H_BASE = "https://iccup.com/upload/images/heroes/";
+const SLUGS = {
+  "Pudge":"Pudge_s_hid_4","Kunkka":"kunkka_s_hid_5","Treant Protector":"Rooftrellen_s_hid_6",
+  "Io":"Io_s_hid_7","Alchemist":"4_s_hid_8","Beastmaster":"Rexxar_s_hid_9",
+  "Centaur Warrunner":"Bradwarden_s_hid_10","Earthshaker":"RaigorStonehoof_s_hid_11",
+  "Omniknight":"PuristThunderwrath_s_hid_12","Brewmaster":"Mangix_s_hid_13","Sven":"Sven_s_hid_14",
+  "Tiny":"Tiny_s_hid_15","Tauren Chieftain":"CairneBloodhoof_s_hid_16","Crystal Maiden":"RylaiCrestfall_s_hid_17",
+  "Enchantress":"icon (1)_s_hid_18","Puck":"Puck_s_hid_19","Chen":"Chen_s_hid_20",
+  "Clockwerk":"Rattletrap_s_hid_21","Dragon Knight":"KnightDavion_s_hid_22","Huskar":"Huskar_s_hid_23",
+  "Bristleback":"Rigwarl_s_hid_24","Anti-Mage":"Magina_s_hid_25","Phoenix":"Phoenix_s_hid_26",
+  "Tusk":"Tuskarr_s_hid_27","Legion Commander":"LegionCommander_s_hid_28","Timbersaw":"Rizzrak_s_hid_29",
+  "Earth Spirit":"EarthSpirit_s_hid_30","Sniper":"KardelSharpeye_s_hid_31","Tidehunter":"Leviathan_s_hid_32",
+  "Magnus":"Magnus_s_hid_33","Spirit Breaker":"Barathrum_s_hid_34","Sand King":"Crixalis_s_hid_35",
+  "Axe":"MogulKhan_s_hid_36","Chaos Knight":"Nessaj_s_hid_37","Doom":"Lucifer_s_hid_38",
+  "Lifestealer":"Naix_s_hid_39","Abaddon":"Abaddon_s_hid_40","Lycan":"Banehallow_s_hid_41",
+  "Night Stalker":"Balanar_s_hid_42","Pit Lord":"Azgalor_s_hid_43","Skeleton King":"BTNSkeletonArcher_s_hid_44",
+  "Slardar":"Slardar_s_hid_45","Undying":"Dirge_s_hid_46","Bloodseeker":"Strygwyr_s_hid_47",
+  "Clinkz":"Clinkz_s_hid_48","Broodmother":"BlackArachnia_s_hid_49","Nyx Assassin":"Anubarak_s_hid_50",
+  "Weaver":"Anubseran_s_hid_51","Phantom Assassin":"Mortred_s_hid_52","Shadow Fiend":"Nevermore_s_hid_54",
+  "Juggernaut":"Yurnero_s_hid_55","Terrorblade":"Terrorblade_s_hid_56","Spectre":"Mercurial_s_hid_57",
+  "Lone Druid":"Syllabear_s_hid_58","Venomancer":"LesaleDeathbringer_s_hid_59","Viper":"Viper_s_hid_60",
+  "Meepo":"Meepo_s_hid_61","Luna":"LunaMoonfang_s_hid_62","Riki":"Rikimaru_s_hid_63",
+  "Drow Ranger":"Traxex_s_hid_64","Templar Assassin":"Lanaya_s_hid_65","Razor":"Razor_s_hid_66",
+  "Slark":"Morgul_s_hid_67","Faceless Void":"Darkterror_s_hid_68","Troll Warlord":"Jahrakal_s_hid_69",
+  "Morphling":"Morphling_s_hid_70","Naga Siren":"Slithice_s_hid_71","Phantom Lancer":"Azwraith_s_hid_72",
+  "Keeper of the Light":"Ezalor_s_hid_73","Bounty Hunter":"Gondar_s_hid_74","Nature's Prophet":"Furion_s_hid_75",
+  "Lina":"LinaInverse_s_hid_76","Silencer":"Nortrom_s_hid_77","Storm Spirit":"RaijinThunderkeg_s_hid_78",
+  "Disruptor":"Thrall_s_hid_79","Ember Spirit":"EmberSpirit_s_hid_80","Windranger":"Alleria_s_hid_81",
+  "Zeus":"Zeus_s_hid_82","Ogre Magi":"AggronStonebreaker_s_hid_83","Techies":"SqueeSpleenandSpoon_s_hid_84",
+  "Mirana":"MiranaNightshade_s_hid_85","Bane":"Atropos_s_hid_86","Jakiro":"Jakiro_s_hid_87",
+  "Tinker":"Boush_s_hid_88","Shadow Shaman":"Rhasta_s_hid_89","Rubick":"Rubik_s_hid_90",
+  "Dark Seer":"Ishkafel_s_hid_91","Skywrath Mage":"Dragonus_s_hid_92","Oracle":"Nerif_s_hid_93",
+  "Death Prophet":"Krobelus_s_hid_94","Lion":"Lion_s_hid_95","Enigma":"Darchrow_s_hid_96",
+  "Gyrocopter":"Aurel Vlaicu_s_hid_97","Lich":"Kelthuzad_s_hid_98","Ursa":"Ulfsaar_s_hid_99",
+  "Necrolyte":"Rotundjere_s_hid_100","Pugna":"Pugna_s_hid_101","Obsidian Destroyer":"Harbinger_s_hid_102",
+  "Vengeful Spirit":"ShendelzareSilkwood_s_hid_103","Queen of Pain":"Akasha_s_hid_104","Warlock":"DemnokLannik_s_hid_105",
+  "Medusa":"Medusa_s_hid_106","Arc Warden":"Zet_s_hid_107","Batrider":"Jinzakk_s_hid_108",
+  "Shadow Demon":"Eredar_s_hid_109","Dazzle":"Dazzle_s_hid_110","Invoker":"Kael_s_hid_111",
+  "Visage":"Visage_s_hid_112","Leshrac":"LeshractheMalicious_s_hid_113",
+  "Ancient Apparition":"Icyghost_s_hid_115","Winter Wyvern":"Auroth_s_hid_116"
+};
+const PORTRAIT_OVERRIDES = {
+  "Witch Doctor":"https://raw.githubusercontent.com/OmarSaad90/SpellIcons/main/portraits/witch_doctor.png",
+};
+function getPortrait(name) {
+  if (PORTRAIT_OVERRIDES[name]) return PORTRAIT_OVERRIDES[name];
+  const s = SLUGS[name]; if (!s) return null;
+  const ext = (s==="4_s_hid_8"||s==="BTNSkeletonArcher_s_hid_44"||s==="icon (1)_s_hid_18") ? ".jpg" : ".png";
+  return `${H_BASE}${s}${ext}`;
+}
+
+// ── Spell icon data (WoW + Dota2 overrides; falls back to D2 auto-URL) ───────
+const DOTA2_BASE = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/abilities/";
+const WOW_BASE   = "https://wow.zamimg.com/images/wow/icons/large/";
+const WOW_ICONS = {
+  "Hellfire Blast":"spell_shadow_unholystrength","Reincarnation":"spell_nature_reincarnation",
+  "Storm Hammer":"inv_hammer_01","Hoof Stomp":"ability_warstomp",
+  "Borrowed Time":"spell_shadow_nightofthedead","Crippling Fear":"spell_shadow_possession",
+  "Finger of Death":"spell_shadow_corpseexplode","Crypt Swarm":"spell_shadow_contagion",
+  "Caustic Finale":"ability_poisonsting","Fissure":"ability_shockwave","Enchant Totem":"ability_smash",
+  "Echo Slam":"spell_nature_earthquake","Glimpse":"spell_arcane_portalironforge",
+  "Static Storm":"spell_nature_lightningoverload","Battle Hunger":"spell_fire_incinerate",
+  "Weave":"spell_shadow_shadowward","Rage":"spell_shadow_unholyfrenzy",
+  "Dark Sacrifice":"spell_shadow_darkritual","Frost Nova":"spell_frost_glacier",
+  "Freezing Field":"spell_frost_chillingblast","Suicide Squad, Attack!":"spell_fire_selfdestruct",
+  "Avalanche":"ability_golemstormbolt","Moonlight Shadow":"ability_ambush","Leap":"spell_frost_iceclaw",
+  "Starfall":"spell_nature_starfall","Enrage":"inv_misc_monsterclaw_03","LVL? Death":"spell_fire_soulburn",
+  "Dragon Tail":"spell_fire_firearmor","Double Edge":"ability_warrior_punishingblow",
+  "Nethertoxin":"spell_nature_corrosivebreath","Poison Nova":"spell_nature_corrosivebreath",
+  "Summon Wolves":"spell_nature_spiritwolf","Rot":"spell_shadow_plaguecloud",
+  "Ensnare":"ability_ensnare","Impetus":"ability_impalingbolt","Great Cleave":"inv_sword_48",
+  "Eclipse":"spell_holy_elunesgrace","Lunar Blessing":"inv_staff_01","Moon Glaive":"ability_upgrademoonglaive",
+  "Frost Arrows":"inv_wand_01","Guardian Angel":"spell_holy_divineintervention",
+  "Firestorm":"spell_fire_fire","Ion Shell":"spell_shadow_haunting","Bloodlust":"spell_nature_bloodlust",
+  "Ignite":"inv_potion_33","Arcane Aura":"spell_nature_brilliance","Take Aim":"inv_musket_03",
+  "Assassinate":"inv_musket_01","Headshot":"inv_musket_02","X Marks the Spot":"ability_spy",
+  "Drunken Haze":"inv_drink_08","Homing Missile":"inv_ammo_bullet_01",
+};
+const DOTA2_ICONS = {
+  "Greevil's Greed":"alchemist_goblins_greed","Nature's Grasp":"treant_protector_natures_grasp",
+  "Burrowstrike":"sandking_burrowstrike","Epicenter":"sandking_epicenter",
+  "Precision Aura":"drow_ranger_trueshot","Invoke":"invoker_invoke",
+  "Crypt Swarm":"death_prophet_carrion_swarm",
+};
+const HERO_KEYS = {
+  "Dragon Knight":"dragon_knight","Omniknight":"omniknight","Skeleton King":"skeleton_king",
+  "Earthshaker":"earthshaker","Kunkka":"kunkka","Sven":"sven","Tauren Chieftain":"elder_titan",
+  "Axe":"axe","Beastmaster":"beastmaster","Alchemist":"alchemist",
+  "Centaur Warrunner":"centaur_warrunner","Clockwerk":"rattletrap","Io":"wisp",
+  "Treant Protector":"treant_protector","Lycan":"lycan","Brewmaster":"brewmaster",
+  "Huskar":"huskar","Tiny":"tiny","Pudge":"pudge","Earth Spirit":"earth_spirit",
+  "Spirit Breaker":"spirit_breaker","Sand King":"sand_king","Lifestealer":"life_stealer",
+  "Chaos Knight":"chaos_knight","Doom":"doom_bringer","Night Stalker":"night_stalker",
+  "Undying":"undying","Magnus":"magnataur","Tidehunter":"tidehunter","Abaddon":"abaddon",
+  "Bristleback":"bristleback","Timbersaw":"shredder","Tusk":"tusk","Phoenix":"phoenix",
+  "Anti-Mage":"antimage","Morphling":"morphling","Windranger":"windrunner",
+  "Drow Ranger":"drow_ranger","Vengeful Spirit":"vengefulspirit","Mirana":"mirana",
+  "Riki":"riki","Phantom Assassin":"phantom_assassin","Luna":"luna",
+  "Templar Assassin":"templar_assassin","Phantom Lancer":"phantom_lancer",
+  "Juggernaut":"juggernaut","Clinkz":"clinkz","Bounty Hunter":"bounty_hunter",
+  "Viper":"viper","Broodmother":"broodmother","Weaver":"weaver",
+  "Troll Warlord":"troll_warlord","Spectre":"spectre","Faceless Void":"faceless_void",
+  "Slark":"slark","Gyrocopter":"gyrocopter","Ursa":"ursa","Ember Spirit":"ember_spirit",
+  "Naga Siren":"naga_siren","Terrorblade":"terrorblade","Arc Warden":"arc_warden",
+  "Medusa":"medusa","Meepo":"meepo","Crystal Maiden":"crystal_maiden","Lina":"lina",
+  "Lion":"lion","Zeus":"zuus","Invoker":"invoker","Pugna":"pugna","Lich":"lich",
+  "Necrolyte":"necrolyte","Warlock":"warlock","Witch Doctor":"witch_doctor",
+  "Silencer":"silencer","Keeper of the Light":"keeper_of_the_light",
+  "Shadow Shaman":"shadow_shaman","Death Prophet":"death_prophet","Enigma":"enigma",
+  "Ancient Apparition":"ancient_apparition","Dark Seer":"dark_seer","Dazzle":"dazzle",
+  "Obsidian Destroyer":"obsidian_destroyer","Bane":"bane","Disruptor":"disruptor",
+  "Jakiro":"jakiro","Rubick":"rubick","Visage":"visage","Ogre Magi":"ogre_magi",
+  "Skywrath Mage":"skywrath_mage","Oracle":"oracle","Winter Wyvern":"winter_wyvern",
+  "Batrider":"batrider","Tinker":"tinker","Puck":"puck","Leshrac":"leshrac",
+  "Nature's Prophet":"furion","Storm Spirit":"storm_spirit","Shadow Demon":"shadow_demon",
+  "Queen of Pain":"queenofpain","Sniper":"sniper","Venomancer":"venomancer",
+  "Nyx Assassin":"nyx_assassin","Razor":"razor","Shadow Fiend":"nevermore",
+  "Lone Druid":"lone_druid","Techies":"techies","Enchantress":"enchantress",
+  "Chen":"chen","Slardar":"slardar","Pit Lord":"abyssal_underlord",
+  "Legion Commander":"legion_commander","Bloodseeker":"bloodseeker",
+};
+function getSpellIconAdmin(heroName, spellName) {
+  if (!spellName) return null;
+  if (WOW_ICONS[spellName]) return WOW_BASE + WOW_ICONS[spellName] + '.jpg';
+  if (DOTA2_ICONS[spellName]) return DOTA2_BASE + DOTA2_ICONS[spellName] + '.png';
+  const key = HERO_KEYS[heroName]; if (!key) return null;
+  const norm = spellName.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim().replace(/\s+/g,'_');
+  return `${DOTA2_BASE}${key}_${norm}.png`;
+}
+
+// ── Ability name loader (lazy fetch + cache) ───────────────
+let indexSource = null;
+const abilityCache = {};
+async function loadAbilities(heroName) {
+  if (abilityCache[heroName]) return abilityCache[heroName];
+  if (!indexSource) indexSource = await fetch('/index.html').then(r => r.text());
+  const escaped = heroName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const m = indexSource.match(new RegExp(`name:"${escaped}"[\\s\\S]{0,300}?abilities:\\[([\\s\\S]{0,900}?)\\],patches:`));
+  const names = m ? [...m[1].matchAll(/name:"([^"]+)"/g)].map(x=>x[1]).slice(0,4) : [];
+  while (names.length < 4) names.push(null);
+  return (abilityCache[heroName] = names);
 }
 
 // ── State ──────────────────────────────────────────────────
 let SKILL_BUILDS = {};
 let selectedHero = null;
-let originalBuilds = []; // [{label, build}] always normalized
-let editBuilds = [];     // [{label, build}] deep-cloned for editing
+let originalBuilds = [];
+let editBuilds = [];
 let activeBuildIdx = 0;
+let currentAbilityNames = [null,null,null,null];
+let currentAbilityIcons = [null,null,null,null];
+let allHeroes = [];
+let pickerOpen = false;
 
-const LABELS = ['Q','W','E','R','S'];
-const IDX_NAMES = { 0:'Q', 1:'W', 2:'E', 3:'R', [-1]:'S' };
-const BADGE_CLS = { 'Q':'badge-q','W':'badge-w','E':'badge-e','R':'badge-r','S':'badge-s' };
-const OPT_CLS   = { 'Q':'sel-q','W':'sel-w','E':'sel-e','R':'sel-r','S':'sel-s' };
+const IDX_NAMES = {0:'Q',1:'W',2:'E',3:'R',[-1]:'S'};
+const BADGE_CLS = {'Q':'badge-q','W':'badge-w','E':'badge-e','R':'badge-r','S':'badge-s'};
+const OPT_CLS   = {'Q':'sel-q','W':'sel-w','E':'sel-e','R':'sel-r','S':'sel-s'};
+const KEY_LABELS = ['Q','W','E','R'];
+const KEY_COLORS = ['key-q','key-w','key-e','key-r'];
 
 // ── Auth ───────────────────────────────────────────────────
-// On page load: check if session cookie is valid
 (async () => {
   const res = await fetch('/api/check-auth');
-  if (res.ok) {
-    await enterApp();
-  } else {
-    showGate();
-  }
+  res.ok ? enterApp() : showGate();
 })();
 
 function showGate() {
   document.getElementById('gate').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
 }
-
 async function enterApp() {
   document.getElementById('gate').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   await loadSkillBuilds();
-  populateHeroSelect();
+  initPicker();
 }
 
-document.getElementById('pw-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('pw-btn').click();
-});
-
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('pw-btn').click(); });
 document.getElementById('pw-btn').addEventListener('click', async () => {
   const val = document.getElementById('pw-input').value.trim();
   if (!val) { document.getElementById('pw-err').textContent = 'Enter a password'; return; }
@@ -471,17 +497,11 @@ document.getElementById('pw-btn').addEventListener('click', async () => {
   document.getElementById('pw-btn').disabled = true;
   document.getElementById('pw-err').textContent = '';
   try {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: val }),
-    });
-    if (res.ok) {
-      document.getElementById('pw-input').value = '';
-      await enterApp();
-    } else {
-      const data = await res.json().catch(() => ({}));
-      document.getElementById('pw-err').textContent = data.error || 'Login failed';
+    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:val}) });
+    if (res.ok) { document.getElementById('pw-input').value=''; enterApp(); }
+    else {
+      const d = await res.json().catch(()=>({}));
+      document.getElementById('pw-err').textContent = d.error || 'Login failed';
       document.getElementById('pw-btn').textContent = 'Enter';
       document.getElementById('pw-btn').disabled = false;
     }
@@ -493,56 +513,122 @@ document.getElementById('pw-btn').addEventListener('click', async () => {
 });
 
 async function logout() {
-  await fetch('/api/logout', { method: 'POST' });
-  showGate();
+  await fetch('/api/logout', {method:'POST'});
+  selectedHero = null; currentAbilityNames = [null,null,null,null]; currentAbilityIcons = [null,null,null,null];
+  document.getElementById('picker-portrait-img').style.display = 'none';
+  document.getElementById('picker-label').textContent = '— select a hero —';
+  document.getElementById('hero-banner').style.display = 'none';
+  document.getElementById('editor-area').innerHTML = '<div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>';
+  document.getElementById('save-area').style.display = 'none';
   document.getElementById('pw-btn').textContent = 'Enter';
   document.getElementById('pw-btn').disabled = false;
   document.getElementById('pw-err').textContent = '';
-  // Reset editor state
-  selectedHero = null;
-  document.getElementById('hero-select').value = '';
-  document.getElementById('editor-area').innerHTML = '<div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>';
-  document.getElementById('save-area').style.display = 'none';
+  showGate();
 }
 
-// ── Load data ──────────────────────────────────────────────
+// ── Data ───────────────────────────────────────────────────
 async function loadSkillBuilds() {
   const res = await fetch('/skill_builds.js?t=' + Date.now());
-  if (!res.ok) throw new Error('HTTP ' + res.status);
   const text = await res.text();
   SKILL_BUILDS = new Function(text + '\nreturn SKILL_BUILDS;')();
 }
 
-// ── Hero select ────────────────────────────────────────────
-function populateHeroSelect() {
-  const sel = document.getElementById('hero-select');
-  const heroes = Object.keys(SKILL_BUILDS).sort();
-  heroes.forEach(h => {
-    const opt = document.createElement('option');
-    opt.value = h;
-    opt.textContent = h;
-    sel.appendChild(opt);
-  });
-  sel.addEventListener('change', () => selectHero(sel.value));
+// ── Custom Picker ──────────────────────────────────────────
+function initPicker() {
+  allHeroes = Object.keys(SKILL_BUILDS).sort();
+  renderPickerItems(allHeroes);
 }
 
-function selectHero(name) {
+function renderPickerItems(heroes) {
+  document.getElementById('picker-list').innerHTML = heroes.map(h => {
+    const p = getPortrait(h);
+    return `<div class="picker-item" onclick="pickerSelect('${esc(h)}')" data-name="${esc(h)}">
+      ${p ? `<img src="${esc(p)}" alt="" onerror="this.style.display='none'">` : '<div style="width:40px;height:34px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);flex-shrink:0"></div>'}
+      <span class="picker-item-name">${esc(h)}</span>
+    </div>`;
+  }).join('');
+}
+
+function filterPicker(q) {
+  const lq = q.toLowerCase();
+  renderPickerItems(lq ? allHeroes.filter(h => h.toLowerCase().includes(lq)) : allHeroes);
+}
+
+function togglePicker() {
+  pickerOpen = !pickerOpen;
+  document.getElementById('picker-trigger').classList.toggle('open', pickerOpen);
+  document.getElementById('picker-dropdown').classList.toggle('open', pickerOpen);
+  if (pickerOpen) { document.getElementById('picker-search').value=''; document.getElementById('picker-search').focus(); renderPickerItems(allHeroes); }
+}
+
+function pickerSelect(name) {
+  pickerOpen = false;
+  document.getElementById('picker-trigger').classList.remove('open');
+  document.getElementById('picker-dropdown').classList.remove('open');
+  const p = getPortrait(name);
+  const img = document.getElementById('picker-portrait-img');
+  if (p) { img.src = p; img.style.display = 'block'; } else { img.style.display = 'none'; }
+  document.getElementById('picker-label').textContent = name;
+  selectHero(name);
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#hero-picker') && pickerOpen) {
+    pickerOpen = false;
+    document.getElementById('picker-trigger').classList.remove('open');
+    document.getElementById('picker-dropdown').classList.remove('open');
+  }
+});
+
+// ── Hero select ────────────────────────────────────────────
+async function selectHero(name) {
   selectedHero = name || null;
   document.getElementById('save-area').style.display = name ? 'flex' : 'none';
-  if (!name) {
-    document.getElementById('editor-area').innerHTML = '<div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>';
-    return;
-  }
+  if (!name) { document.getElementById('hero-banner').style.display='none'; return; }
+
+  // Show loading state
+  document.getElementById('hero-banner').style.display = 'flex';
+  document.getElementById('hero-banner').innerHTML = '<div class="loading-banner">Loading ability data…</div>';
+  document.getElementById('editor-area').innerHTML = '';
+
+  // Load abilities + icons
+  const names = await loadAbilities(name);
+  currentAbilityNames = names;
+  currentAbilityIcons = names.map(n => n ? getSpellIconAdmin(name, n) : null);
+
+  // Banner
+  showBanner(name);
+
+  // Build state
   const raw = SKILL_BUILDS[name];
-  // Normalize to [{label, build}]
-  if (Array.isArray(raw) && raw.length > 0 && typeof raw[0] === 'object') {
-    originalBuilds = raw.map(b => ({ label: b.label, build: [...b.build] }));
-  } else {
-    originalBuilds = [{ label: null, build: [...raw] }];
-  }
-  editBuilds = originalBuilds.map(b => ({ label: b.label, build: [...b.build] }));
+  originalBuilds = (Array.isArray(raw) && raw.length > 0 && typeof raw[0]==='object')
+    ? raw.map(b => ({label:b.label, build:[...b.build]}))
+    : [{label:null, build:[...raw]}];
+  editBuilds = originalBuilds.map(b => ({label:b.label, build:[...b.build]}));
   activeBuildIdx = 0;
   renderEditor();
+}
+
+function showBanner(name) {
+  const portrait = getPortrait(name);
+  const abHtml = currentAbilityNames.map((n, i) => {
+    if (!n) return '';
+    const icon = currentAbilityIcons[i];
+    return `<div class="banner-ability">
+      ${icon ? `<img src="${esc(icon)}" alt="" onerror="this.style.display='none'">` : ''}
+      <div>
+        <div class="banner-ability-key ${KEY_COLORS[i]}">${KEY_LABELS[i]}</div>
+        <div class="banner-ability-name" title="${esc(n)}">${esc(n)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('hero-banner').innerHTML = `
+    ${portrait ? `<img class="banner-portrait" src="${esc(portrait)}" alt="${esc(name)}" onerror="this.style.display='none'">` : ''}
+    <div class="banner-info">
+      <div class="banner-hero-name">${esc(name)}</div>
+      <div class="banner-abilities">${abHtml}</div>
+    </div>`;
+  document.getElementById('hero-banner').style.display = 'flex';
 }
 
 // ── Render editor ──────────────────────────────────────────
@@ -550,76 +636,63 @@ function renderEditor() {
   const isMulti = originalBuilds.length > 1 || originalBuilds[0].label !== null;
   let html = '';
 
-  // Current build view (read-only strip)
-  html += '<div class="card" style="margin-bottom:20px">';
-  html += '<div class="card-header"><span class="card-title">CURRENT BUILD</span>';
+  // Current build strip
+  html += '<div class="card" style="margin-bottom:20px"><div class="card-header"><span class="card-title">CURRENT BUILD</span>';
   if (originalBuilds[0].label) html += `<span class="card-label-badge">${esc(originalBuilds[0].label)}</span>`;
   html += '</div><div class="card-body">';
   originalBuilds.forEach((b, i) => {
-    if (i > 0) {
-      html += `<div style="margin-top:10px;margin-bottom:4px;"><span class="card-label-badge">${esc(b.label || 'Build ' + (i+1))}</span></div>`;
-    }
-    html += renderStrip(b.build, 'current-strip-' + i);
+    if (i > 0) html += `<div style="margin:10px 0 4px"><span class="card-label-badge">${esc(b.label||'Build '+(i+1))}</span></div>`;
+    html += renderStrip(b.build, 'strip-'+i);
   });
   html += '</div></div>';
 
-  // Build tabs if multiple
+  // Tabs
+  html += '<div class="build-tabs">';
   if (isMulti || editBuilds.length > 1) {
-    html += '<div class="build-tabs" id="build-tabs">';
     editBuilds.forEach((b, i) => {
-      const label = b.label || `Build ${i + 1}`;
-      html += `<button class="build-tab${i === activeBuildIdx ? ' active' : ''}" onclick="switchBuild(${i})">${esc(label)}</button>`;
+      html += `<button class="build-tab${i===activeBuildIdx?' active':''}" onclick="switchBuild(${i})">${esc(b.label||'Build '+(i+1))}</button>`;
     });
-    html += `<button class="add-build-btn" onclick="addBuild()">+ Add Build</button>`;
-    html += '</div>';
-  } else {
-    html += '<div class="build-tabs" id="build-tabs">';
-    html += `<button class="add-build-btn" onclick="addBuild()">+ Add a 2nd build variant</button>`;
-    html += '</div>';
   }
+  html += `<button class="add-build-btn" onclick="addBuild()">+ ${editBuilds.length>1?'Add Build':'Add 2nd variant'}</button></div>`;
 
-  // Active build editor
+  // Editor
   const b = editBuilds[activeBuildIdx];
-  const orig = originalBuilds[activeBuildIdx] || { label: null, build: new Array(18).fill(-1) };
-
-  html += '<div class="card"><div class="card-header">';
-  html += `<span class="card-title">EDITING</span>`;
+  const orig = originalBuilds[activeBuildIdx] || {label:null, build:new Array(18).fill(-1)};
+  html += '<div class="card"><div class="card-header"><span class="card-title">EDITING</span>';
   if (editBuilds.length > 1) {
-    html += `<div class="label-row" style="margin:0;flex:1;margin-left:10px">`;
-    html += `<label for="label-input-${activeBuildIdx}">Label:</label>`;
-    html += `<input class="label-input" id="label-input-${activeBuildIdx}" value="${esc(b.label || '')}" placeholder="e.g. Core" oninput="updateLabel(this.value)">`;
-    html += `<button class="remove-build-btn" onclick="removeBuild(${activeBuildIdx})">Remove this build</button>`;
-    html += `</div>`;
+    html += `<div class="label-row"><label>Label:</label><input class="label-input" value="${esc(b.label||'')}" placeholder="e.g. Core" oninput="updateLabel(this.value)"><button class="remove-build-btn" onclick="removeBuild(${activeBuildIdx})">Remove</button></div>`;
   }
-  html += '</div><div class="card-body">';
+  html += '</div><div class="card-body"><div class="editor-grid">';
 
-  html += '<div class="editor-grid">';
   for (let i = 0; i < 18; i++) {
-    const curVal = b.build[i];
-    const origVal = orig.build[i];
+    const curVal = b.build[i], origVal = orig.build[i];
     const changed = curVal !== origVal;
     const curLetter = IDX_NAMES[curVal] ?? 'S';
-    html += `<div class="editor-row${changed ? ' is-changed' : ''}" id="row-${i}">`;
+    html += `<div class="editor-row${changed?' is-changed':''}" id="row-${i}">`;
     html += `<span class="row-lvl">Lv${i+1}</span>`;
-    html += `<div class="row-current">${badgeHTML(curLetter)}</div>`;
+    html += `<div class="row-current">${badgeHTML(curLetter, 36)}</div>`;
     html += `<span class="row-arrow">→</span>`;
-    html += `<div class="row-options">`;
+    html += '<div class="row-options">';
     ['Q','W','E','R','S'].forEach(letter => {
+      const idx = {Q:0,W:1,E:2,R:3,S:-1}[letter];
+      const icon = idx >= 0 ? currentAbilityIcons[idx] : null;
+      const aname = idx >= 0 ? currentAbilityNames[idx] : 'Stats';
       const isSel = curLetter === letter;
-      html += `<button class="opt-btn${isSel ? ' ' + OPT_CLS[letter] : ''}" onclick="setSlot(${i}, '${letter}')">${letter}</button>`;
+      html += `<button class="opt-btn${isSel?' '+OPT_CLS[letter]:''}" title="${esc(aname||letter)}" onclick="setSlot(${i},'${letter}')">`;
+      if (icon) html += `<img src="${esc(icon)}" alt="" onerror="this.style.display='none'">`;
+      html += `<span>${letter}</span></button>`;
     });
-    html += `</div>`;
+    html += '</div>';
     if (changed) {
-      html += `<span class="row-changed-tag"><span class="diff-from">${IDX_NAMES[origVal] ?? 'S'}</span> → ${curLetter}</span>`;
+      const fromName = orig.build[i] >= 0 ? (currentAbilityNames[orig.build[i]] || IDX_NAMES[orig.build[i]]) : 'Stats';
+      const toName   = curVal >= 0 ? (currentAbilityNames[curVal] || IDX_NAMES[curVal]) : 'Stats';
+      html += `<span class="row-changed-tag"><span class="diff-from">${esc(fromName)}</span><br>→ <span class="diff-to">${esc(toName)}</span></span>`;
     } else {
-      html += `<span class="row-changed-tag was"></span>`;
+      html += '<span></span>';
     }
-    html += `</div>`;
+    html += '</div>';
   }
-  html += '</div>';
-  html += diffSummaryHTML();
-  html += '</div></div>';
-
+  html += '</div>' + diffSummaryHTML() + '</div></div>';
   document.getElementById('editor-area').innerHTML = html;
   updateSaveBtn();
 }
@@ -628,93 +701,76 @@ function renderStrip(build, id) {
   let html = `<div class="skill-strip" id="${id}">`;
   build.forEach((v, i) => {
     const letter = IDX_NAMES[v] ?? 'S';
-    html += `<div class="strip-cell"><div class="strip-badge ${BADGE_CLS[letter]}">${letter}</div><div class="strip-lvl">${i+1}</div></div>`;
+    const icon = (v >= 0 && v <= 3) ? currentAbilityIcons[v] : null;
+    html += `<div class="strip-cell"><div class="strip-badge ${BADGE_CLS[letter]}">`;
+    html += icon
+      ? `<img src="${esc(icon)}" alt="${letter}" onerror="this.outerHTML='${letter}'">`
+      : letter;
+    html += `</div><div class="strip-lvl">${i+1}</div></div>`;
   });
-  html += '</div>';
-  return html;
+  return html + '</div>';
 }
 
-function badgeHTML(letter) {
-  return `<div class="strip-badge ${BADGE_CLS[letter]}" style="width:30px;height:30px">${letter}</div>`;
+function badgeHTML(letter, size = 32) {
+  const idx = {Q:0,W:1,E:2,R:3}[letter];
+  const icon = idx !== undefined ? currentAbilityIcons[idx] : null;
+  const inner = icon
+    ? `<img src="${esc(icon)}" alt="${letter}" style="width:100%;height:100%;object-fit:cover" onerror="this.outerHTML='${letter}'">`
+    : letter;
+  return `<div class="strip-badge ${BADGE_CLS[letter]}" style="width:${size}px;height:${size}px">${inner}</div>`;
 }
 
 function diffSummaryHTML() {
   const b = editBuilds[activeBuildIdx];
-  const orig = originalBuilds[activeBuildIdx] || { build: new Array(18).fill(-1) };
-  const diffs = [];
-  b.build.forEach((v, i) => {
-    if (v !== (orig.build[i] ?? -1)) {
-      diffs.push({ lvl: i+1, from: IDX_NAMES[orig.build[i]] ?? 'S', to: IDX_NAMES[v] ?? 'S' });
+  const orig = originalBuilds[activeBuildIdx] || {build:new Array(18).fill(-1)};
+  const diffs = b.build.reduce((acc, v, i) => {
+    if (v !== (orig.build[i]??-1)) {
+      const fromIdx = orig.build[i]??-1, toIdx = v;
+      const fromName = fromIdx >= 0 ? (currentAbilityNames[fromIdx]||IDX_NAMES[fromIdx]) : 'Stats';
+      const toName   = toIdx   >= 0 ? (currentAbilityNames[toIdx]  ||IDX_NAMES[toIdx])   : 'Stats';
+      acc.push({lvl:i+1, fromName, toName});
     }
-  });
+    return acc;
+  }, []);
 
-  let html = '<div class="diff-summary">';
-  html += `<div class="diff-title">${diffs.length > 0 ? diffs.length + ' pending change' + (diffs.length !== 1 ? 's' : '') : 'No changes yet'}</div>`;
-  html += '<div class="diff-list">';
-  if (diffs.length === 0) {
-    html += '<span class="no-changes">Edit the skill order above — changes will appear here</span>';
-  } else {
-    diffs.forEach(d => {
-      html += `<div class="diff-item">Level <strong>${d.lvl}</strong>: <span class="diff-from">${d.from}</span> → <span class="diff-to">${d.to}</span></div>`;
-    });
-  }
-  html += '</div></div>';
-  return html;
+  let html = `<div class="diff-summary"><div class="diff-title">${diffs.length > 0 ? diffs.length+' pending change'+(diffs.length!==1?'s':'') : 'No changes yet'}</div><div class="diff-list">`;
+  html += diffs.length === 0
+    ? '<span class="no-changes">Edit the skill order above — changes will appear here</span>'
+    : diffs.map(d => `<div class="diff-item">Level <strong>${d.lvl}</strong>: <span class="diff-from">${esc(d.fromName)}</span> → <span class="diff-to">${esc(d.toName)}</span></div>`).join('');
+  return html + '</div></div>';
 }
 
 // ── Interactions ───────────────────────────────────────────
-function switchBuild(idx) {
-  activeBuildIdx = idx;
-  renderEditor();
-}
-
-function setSlot(levelIdx, letter) {
-  const valMap = { Q:0, W:1, E:2, R:3, S:-1 };
-  editBuilds[activeBuildIdx].build[levelIdx] = valMap[letter];
-  renderEditor();
-}
-
-function updateLabel(val) {
-  editBuilds[activeBuildIdx].label = val;
-}
+function switchBuild(idx) { activeBuildIdx = idx; renderEditor(); }
+function setSlot(lvl, letter) { editBuilds[activeBuildIdx].build[lvl] = {Q:0,W:1,E:2,R:3,S:-1}[letter]; renderEditor(); }
+function updateLabel(val) { editBuilds[activeBuildIdx].label = val; }
 
 function addBuild() {
-  // If this is the first label-less build, give it a label first
   if (editBuilds.length === 1 && !editBuilds[0].label) {
     editBuilds[0].label = 'Build 1';
     if (originalBuilds[0].label === null) originalBuilds[0].label = 'Build 1';
   }
-  editBuilds.push({ label: 'Build ' + (editBuilds.length + 1), build: new Array(18).fill(-1) });
-  originalBuilds.push({ label: null, build: new Array(18).fill(-1) });
+  editBuilds.push({label:'Build '+(editBuilds.length+1), build:new Array(18).fill(-1)});
+  originalBuilds.push({label:null, build:new Array(18).fill(-1)});
   activeBuildIdx = editBuilds.length - 1;
   renderEditor();
 }
-
 function removeBuild(idx) {
   if (editBuilds.length <= 1) return;
-  editBuilds.splice(idx, 1);
-  originalBuilds.splice(idx, 1);
-  activeBuildIdx = Math.min(activeBuildIdx, editBuilds.length - 1);
+  editBuilds.splice(idx,1); originalBuilds.splice(idx,1);
+  activeBuildIdx = Math.min(activeBuildIdx, editBuilds.length-1);
   renderEditor();
 }
 
 function hasChanges() {
   if (editBuilds.length !== originalBuilds.length) return true;
   for (let bi = 0; bi < editBuilds.length; bi++) {
-    const eb = editBuilds[bi];
-    const ob = originalBuilds[bi];
-    if (eb.label !== ob.label) return true;
-    for (let i = 0; i < 18; i++) {
-      if (eb.build[i] !== (ob.build[i] ?? -1)) return true;
-    }
+    if (editBuilds[bi].label !== originalBuilds[bi].label) return true;
+    for (let i = 0; i < 18; i++) if (editBuilds[bi].build[i] !== (originalBuilds[bi].build[i]??-1)) return true;
   }
   return false;
 }
-
-function updateSaveBtn() {
-  const btn = document.getElementById('save-btn');
-  if (btn) btn.disabled = !hasChanges();
-}
+function updateSaveBtn() { const b = document.getElementById('save-btn'); if (b) b.disabled = !hasChanges(); }
 
 // ── Save ───────────────────────────────────────────────────
 async function saveChanges() {
@@ -723,45 +779,24 @@ async function saveChanges() {
   btn.disabled = true;
   status.className = 'save-status loading';
   status.textContent = 'Saving…';
-
-  // Determine what to send
-  // If single build with no label, send plain array; otherwise send [{label, build}]
-  let builds;
-  if (editBuilds.length === 1 && !editBuilds[0].label) {
-    builds = editBuilds[0].build;
-  } else {
-    builds = editBuilds.map(b => ({ label: b.label || '', build: b.build }));
-  }
-
+  const builds = (editBuilds.length===1 && !editBuilds[0].label)
+    ? editBuilds[0].build
+    : editBuilds.map(b => ({label:b.label||'', build:b.build}));
   try {
-    const res = await fetch('/api/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ heroName: selectedHero, builds }),
-    });
+    const res = await fetch('/api/save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({heroName:selectedHero, builds})});
     const data = await res.json();
-
-    if (res.status === 409) {
-      status.className = 'save-status err';
-      status.textContent = data.error;
-      btn.disabled = false;
-      return;
-    }
     if (!res.ok) {
       status.className = 'save-status err';
       status.textContent = data.error || 'Save failed';
       btn.disabled = false;
       return;
     }
-
-    // Success — update local state and refresh SKILL_BUILDS
     status.className = 'save-status ok';
     status.textContent = '✓ Saved! Redeploying (~30s)…';
-    originalBuilds = editBuilds.map(b => ({ label: b.label, build: [...b.build] }));
+    originalBuilds = editBuilds.map(b => ({label:b.label, build:[...b.build]}));
     SKILL_BUILDS[selectedHero] = builds;
     setTimeout(() => { status.textContent = ''; updateSaveBtn(); }, 5000);
-
-  } catch(e) {
+  } catch {
     status.className = 'save-status err';
     status.textContent = 'Network error — check your connection';
     btn.disabled = false;
