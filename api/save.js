@@ -140,7 +140,7 @@ export default async function handler(req, res) {
       if (status === 409) return res.status(409).json({ error: 'Someone else just saved — please try again.' });
     }
 
-    if (status < 200 || status >= 300) return res.status(502).json({ error: 'GitHub write failed' });
+    if (status < 200 || status >= 300) return res.status(502).json({ error: `GitHub write failed (HTTP ${status})` });
 
     if (HOOK) fetch(HOOK, { method: 'POST' }).catch(() => {});
     return res.status(200).json({ ok: true });
