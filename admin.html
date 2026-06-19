@@ -426,7 +426,6 @@ function esc(s) {
 }
 
 // ── State ──────────────────────────────────────────────────
-let password = '';
 let SKILL_BUILDS = {};
 let selectedHero = null;
 let originalBuilds = []; // [{label, build}] always normalized
@@ -439,40 +438,71 @@ const BADGE_CLS = { 'Q':'badge-q','W':'badge-w','E':'badge-e','R':'badge-r','S':
 const OPT_CLS   = { 'Q':'sel-q','W':'sel-w','E':'sel-e','R':'sel-r','S':'sel-s' };
 
 // ── Auth ───────────────────────────────────────────────────
+// On page load: check if session cookie is valid
+(async () => {
+  const res = await fetch('/api/check-auth');
+  if (res.ok) {
+    await enterApp();
+  } else {
+    showGate();
+  }
+})();
+
+function showGate() {
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+async function enterApp() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await loadSkillBuilds();
+  populateHeroSelect();
+}
+
 document.getElementById('pw-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('pw-btn').click();
 });
-document.getElementById('pw-btn').addEventListener('click', () => {
+
+document.getElementById('pw-btn').addEventListener('click', async () => {
   const val = document.getElementById('pw-input').value.trim();
   if (!val) { document.getElementById('pw-err').textContent = 'Enter a password'; return; }
-  password = val;
-  // Verify by fetching skill_builds.js (it always exists) — real auth check is server-side on save
-  loadAndEnter();
-});
-
-async function loadAndEnter() {
-  document.getElementById('pw-btn').textContent = 'Loading…';
+  document.getElementById('pw-btn').textContent = 'Checking…';
   document.getElementById('pw-btn').disabled = true;
+  document.getElementById('pw-err').textContent = '';
   try {
-    await loadSkillBuilds();
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    populateHeroSelect();
-  } catch(e) {
-    document.getElementById('pw-err').textContent = 'Failed to load data: ' + e.message;
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: val }),
+    });
+    if (res.ok) {
+      document.getElementById('pw-input').value = '';
+      await enterApp();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      document.getElementById('pw-err').textContent = data.error || 'Login failed';
+      document.getElementById('pw-btn').textContent = 'Enter';
+      document.getElementById('pw-btn').disabled = false;
+    }
+  } catch {
+    document.getElementById('pw-err').textContent = 'Network error — try again';
     document.getElementById('pw-btn').textContent = 'Enter';
     document.getElementById('pw-btn').disabled = false;
   }
-}
+});
 
-function logout() {
-  password = '';
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-err').textContent = '';
+async function logout() {
+  await fetch('/api/logout', { method: 'POST' });
+  showGate();
   document.getElementById('pw-btn').textContent = 'Enter';
   document.getElementById('pw-btn').disabled = false;
-  document.getElementById('gate').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
+  document.getElementById('pw-err').textContent = '';
+  // Reset editor state
+  selectedHero = null;
+  document.getElementById('hero-select').value = '';
+  document.getElementById('editor-area').innerHTML = '<div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>';
+  document.getElementById('save-area').style.display = 'none';
 }
 
 // ── Load data ──────────────────────────────────────────────
@@ -706,10 +736,7 @@ async function saveChanges() {
   try {
     const res = await fetch('/api/save', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Admin-Password': password,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ heroName: selectedHero, builds }),
     });
     const data = await res.json();
