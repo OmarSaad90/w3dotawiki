@@ -415,6 +415,16 @@ body {
 </div>
 
 <script>
+// ── HTML sanitizer (prevents XSS from injected strings) ───
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ── State ──────────────────────────────────────────────────
 let password = '';
 let SKILL_BUILDS = {};
@@ -513,11 +523,11 @@ function renderEditor() {
   // Current build view (read-only strip)
   html += '<div class="card" style="margin-bottom:20px">';
   html += '<div class="card-header"><span class="card-title">CURRENT BUILD</span>';
-  if (originalBuilds[0].label) html += `<span class="card-label-badge">${originalBuilds[0].label}</span>`;
+  if (originalBuilds[0].label) html += `<span class="card-label-badge">${esc(originalBuilds[0].label)}</span>`;
   html += '</div><div class="card-body">';
   originalBuilds.forEach((b, i) => {
     if (i > 0) {
-      html += `<div style="margin-top:10px;margin-bottom:4px;"><span class="card-label-badge">${b.label || 'Build ' + (i+1)}</span></div>`;
+      html += `<div style="margin-top:10px;margin-bottom:4px;"><span class="card-label-badge">${esc(b.label || 'Build ' + (i+1))}</span></div>`;
     }
     html += renderStrip(b.build, 'current-strip-' + i);
   });
@@ -528,7 +538,7 @@ function renderEditor() {
     html += '<div class="build-tabs" id="build-tabs">';
     editBuilds.forEach((b, i) => {
       const label = b.label || `Build ${i + 1}`;
-      html += `<button class="build-tab${i === activeBuildIdx ? ' active' : ''}" onclick="switchBuild(${i})">${label}</button>`;
+      html += `<button class="build-tab${i === activeBuildIdx ? ' active' : ''}" onclick="switchBuild(${i})">${esc(label)}</button>`;
     });
     html += `<button class="add-build-btn" onclick="addBuild()">+ Add Build</button>`;
     html += '</div>';
@@ -547,7 +557,7 @@ function renderEditor() {
   if (editBuilds.length > 1) {
     html += `<div class="label-row" style="margin:0;flex:1;margin-left:10px">`;
     html += `<label for="label-input-${activeBuildIdx}">Label:</label>`;
-    html += `<input class="label-input" id="label-input-${activeBuildIdx}" value="${b.label || ''}" placeholder="e.g. Core" oninput="updateLabel(this.value)">`;
+    html += `<input class="label-input" id="label-input-${activeBuildIdx}" value="${esc(b.label || '')}" placeholder="e.g. Core" oninput="updateLabel(this.value)">`;
     html += `<button class="remove-build-btn" onclick="removeBuild(${activeBuildIdx})">Remove this build</button>`;
     html += `</div>`;
   }
