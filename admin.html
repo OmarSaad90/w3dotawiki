@@ -256,13 +256,24 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 /* ── BACK BUTTON ── */
 .back-btn {
   background: none; border: 1px solid var(--border); border-radius: var(--radius);
-  color: var(--text-dim); text-decoration: none; font-size: .78rem; padding: 5px 12px;
-  transition: border-color .15s, color .15s; white-space: nowrap;
+  color: var(--text-dim); font-size: .78rem; padding: 5px 12px; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: border-color .15s, color .15s; white-space: nowrap;
 }
 .back-btn:hover { border-color: var(--gold); color: var(--gold); }
 
+/* ── COLLAPSIBLE SECTIONS ── */
+.collapsible-section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+.collapsible-header {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface2); padding: 12px 16px; cursor: pointer; user-select: none; transition: background .15s;
+}
+.collapsible-header:hover { background: rgba(201,168,76,.05); }
+.collapsible-title { font-family: 'Cinzel', serif; font-size: .78rem; color: var(--gold); letter-spacing: .08em; }
+.collapsible-toggle { font-size: .72rem; color: var(--text-dim); font-family: 'Inter', sans-serif; }
+.collapsible-body { display: none; border-top: 1px solid var(--border); }
+.collapsible-section.is-open .collapsible-body { display: block; }
+
 /* ── SPELL EDITOR ── */
-.section-divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 .spell-abilities-grid { display: flex; flex-direction: column; gap: 12px; }
 .spell-ability-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .spell-ability-header {
@@ -309,12 +320,10 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 <div id="app">
   <header class="app-header">
     <h1>⚔ W3Dota Wiki — Admin Panel</h1>
-    <a href="/" class="back-btn">← Wiki</a>
+    <button id="back-btn" class="back-btn" onclick="backToMain()" style="display:none">← Back</button>
     <button class="logout-btn" onclick="logout()">Log out</button>
   </header>
   <div class="app-body">
-    <p class="section-heading">Skill Builds</p>
-
     <div class="hero-selector-row">
       <label>Hero</label>
       <div class="hero-picker" id="hero-picker">
@@ -332,26 +341,40 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 
     <div id="hero-banner" class="hero-banner"></div>
 
-    <div id="editor-area">
-      <div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>
-    </div>
+    <div id="sections-container" style="display:none">
 
-    <div class="save-area" id="save-area" style="display:none">
-      <button class="save-btn" id="save-btn" disabled onclick="saveChanges()">Save Changes</button>
-      <span class="save-status" id="save-status"></span>
-    </div>
+      <div class="collapsible-section" id="section-skill">
+        <div class="collapsible-header" onclick="toggleSection('skill')">
+          <span class="collapsible-title">⚔ Skill Order</span>
+          <span class="collapsible-toggle" id="toggle-skill">Open ▾</span>
+        </div>
+        <div class="collapsible-body">
+          <div style="padding:16px 16px 8px">
+            <div id="editor-area"></div>
+            <div class="save-area" id="save-area" style="display:none">
+              <button class="save-btn" id="save-btn" disabled onclick="saveChanges()">Save Changes</button>
+              <span class="save-status" id="save-status"></span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- ── SPELL VALUES SECTION ── -->
-    <div id="spell-section" style="display:none">
-      <hr class="section-divider">
-      <p class="section-heading">Spell Values</p>
-      <div id="spell-editor-area">
-        <div class="placeholder"><span>✨</span>Select a hero to edit spell values</div>
+      <div class="collapsible-section" id="section-spell">
+        <div class="collapsible-header" onclick="toggleSection('spell')">
+          <span class="collapsible-title">✨ Spell Values</span>
+          <span class="collapsible-toggle" id="toggle-spell">Open ▾</span>
+        </div>
+        <div class="collapsible-body">
+          <div style="padding:16px 16px 8px">
+            <div id="spell-editor-area"></div>
+            <div class="save-area" id="spell-save-area" style="display:none">
+              <button class="save-btn" id="spell-save-btn" disabled onclick="saveSpellChanges()">Save Spell Values</button>
+              <span class="save-status" id="spell-save-status"></span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="save-area" id="spell-save-area" style="display:none">
-        <button class="save-btn" id="spell-save-btn" disabled onclick="saveSpellChanges()">Save Spell Values</button>
-        <span class="save-status" id="spell-save-status"></span>
-      </div>
+
     </div>
   </div>
 </div>
@@ -724,18 +747,37 @@ document.getElementById('pw-btn').addEventListener('click', async () => {
 
 async function logout() {
   await fetch('/api/logout', {method:'POST'});
-  selectedHero = null; currentAbilityNames = [null,null,null,null]; currentAbilityIcons = [null,null,null,null];
-  spellAbilities = []; spellCurrentValues = {}; spellEditValues = {};
-  document.getElementById('picker-portrait-img').style.display = 'none';
-  document.getElementById('picker-label').textContent = '— select a hero —';
-  document.getElementById('hero-banner').style.display = 'none';
-  document.getElementById('editor-area').innerHTML = '<div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>';
-  document.getElementById('save-area').style.display = 'none';
-  document.getElementById('spell-section').style.display = 'none';
+  backToMain();
   document.getElementById('pw-btn').textContent = 'Enter';
   document.getElementById('pw-btn').disabled = false;
   document.getElementById('pw-err').textContent = '';
   showGate();
+}
+
+function backToMain() {
+  selectedHero = null;
+  currentAbilityNames = [null,null,null,null]; currentAbilityIcons = [null,null,null,null];
+  spellAbilities = []; spellCurrentValues = {}; spellEditValues = {};
+  document.getElementById('picker-portrait-img').style.display = 'none';
+  document.getElementById('picker-label').textContent = '— select a hero —';
+  document.getElementById('hero-banner').style.display = 'none';
+  document.getElementById('sections-container').style.display = 'none';
+  document.getElementById('back-btn').style.display = 'none';
+  // Collapse both sections
+  ['skill','spell'].forEach(w => {
+    document.getElementById(`section-${w}`).classList.remove('is-open');
+    document.getElementById(`toggle-${w}`).textContent = 'Open ▾';
+  });
+  document.getElementById('editor-area').innerHTML = '';
+  document.getElementById('save-area').style.display = 'none';
+  document.getElementById('spell-editor-area').innerHTML = '';
+  document.getElementById('spell-save-area').style.display = 'none';
+}
+
+function toggleSection(which) {
+  const section = document.getElementById(`section-${which}`);
+  const isOpen = section.classList.toggle('is-open');
+  document.getElementById(`toggle-${which}`).textContent = isOpen ? 'Collapse ▴' : 'Open ▾';
 }
 
 // ── Data ───────────────────────────────────────────────────
@@ -795,8 +837,12 @@ document.addEventListener('click', e => {
 // ── Hero select ────────────────────────────────────────────
 async function selectHero(name) {
   selectedHero = name || null;
-  document.getElementById('save-area').style.display = name ? 'flex' : 'none';
-  if (!name) { document.getElementById('hero-banner').style.display='none'; return; }
+  if (!name) {
+    document.getElementById('hero-banner').style.display = 'none';
+    document.getElementById('sections-container').style.display = 'none';
+    document.getElementById('back-btn').style.display = 'none';
+    return;
+  }
 
   // Show loading state
   document.getElementById('hero-banner').style.display = 'flex';
@@ -819,10 +865,15 @@ async function selectHero(name) {
   editBuilds = originalBuilds.map(b => ({label:b.label, build:[...b.build]}));
   activeBuildIdx = 0;
   renderEditor();
+  document.getElementById('save-area').style.display = 'flex';
 
   // Spell editor
   spellAbilities = await loadAbilityStatData(name);
   renderSpellEditor(name);
+
+  // Show sections + back button
+  document.getElementById('sections-container').style.display = 'block';
+  document.getElementById('back-btn').style.display = '';
 }
 
 function showBanner(name) {
@@ -1016,7 +1067,6 @@ async function loadAbilityStatData(heroName) {
 
 // ── Spell editor render ────────────────────────────────────
 function renderSpellEditor(heroName) {
-  document.getElementById('spell-section').style.display = 'block';
   document.getElementById('spell-save-area').style.display = 'flex';
 
   if (!spellAbilities.length) {
