@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W3Dota Wiki — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090f;
+  --surface: #111019;
+  --surface2: #18162a;
+  --border: rgba(110,75,140,0.28);
+  --border-gold: rgba(201,168,76,0.4);
+  --gold: #c9a84c;
+  --gold-glow: rgba(201,168,76,0.15);
+  --text: #cbbddb;
+  --text-dim: #7a6a8a;
+  --text-bright: #e8daf8;
+  --q: #3dd5dc;
+  --w: #5b8ee6;
+  --e: #4cc87a;
+  --r: #c9a84c;
+  --s: #52506a;
+  --changed-bg: rgba(201,168,76,0.08);
+  --changed-border: rgba(201,168,76,0.35);
+  --success: #4cc87a;
+  --error: #e06060;
+  --radius: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+/* ── GATE ── */
+#gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+.gate-card {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(201,168,76,0.08);
+}
+.gate-icon { font-size: 2.4rem; margin-bottom: 16px; }
+.gate-card h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  color: var(--gold);
+  margin-bottom: 6px;
+  letter-spacing: .05em;
+}
+.gate-card p { color: var(--text-dim); font-size: .85rem; margin-bottom: 28px; }
+.gate-card input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-bright);
+  font-family: 'Inter', sans-serif;
+  font-size: .9rem;
+  padding: 10px 14px;
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color .15s;
+}
+.gate-card input:focus { border-color: var(--gold); }
+.gate-card button {
+  width: 100%;
+  background: linear-gradient(135deg, #4a3510, #8a6a28, #c9a84c, #8a6a28, #4a3510);
+  border: none;
+  border-radius: var(--radius);
+  color: #0a0a12;
+  font-family: 'Cinzel', serif;
+  font-size: .9rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  padding: 11px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.gate-card button:hover { opacity: .85; }
+.err-msg { color: var(--error); font-size: .8rem; margin-top: 10px; min-height: 18px; }
+
+/* ── APP SHELL ── */
+#app { display: none; }
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 54px;
+}
+.app-header h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  letter-spacing: .06em;
+  flex: 1;
+}
+.logout-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: .78rem;
+  padding: 5px 12px;
+  transition: border-color .15s, color .15s;
+}
+.logout-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+.app-body { max-width: 860px; margin: 0 auto; padding: 32px 24px 60px; }
+
+/* ── SECTION HEADING ── */
+.section-heading {
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+  color: var(--text-dim);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* ── HERO SELECTOR ── */
+.hero-selector-row { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; }
+.hero-selector-row label { color: var(--text-dim); font-size: .82rem; white-space: nowrap; }
+.hero-select {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-bright);
+  font-family: 'Inter', sans-serif;
+  font-size: .9rem;
+  padding: 9px 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.hero-select:focus { border-color: var(--gold); }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.card-header {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: .72rem;
+  color: var(--gold);
+  letter-spacing: .1em;
+}
+.card-label-badge {
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 4px;
+  color: var(--gold);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  padding: 2px 8px;
+}
+.card-body { padding: 14px 16px; }
+
+/* ── SKILL STRIP (current view) ── */
+.skill-strip {
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.skill-strip::-webkit-scrollbar { height: 4px; }
+.skill-strip::-webkit-scrollbar-track { background: #0a0a12; }
+.skill-strip::-webkit-scrollbar-thumb { background: var(--border-gold); border-radius: 4px; }
+.strip-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.strip-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.strip-lvl { font-size: .6rem; color: var(--text-dim); }
+.badge-q { background: rgba(61,213,220,.15); border: 1px solid rgba(61,213,220,.4); color: var(--q); }
+.badge-w { background: rgba(91,142,230,.15); border: 1px solid rgba(91,142,230,.4); color: var(--w); }
+.badge-e { background: rgba(76,200,122,.15); border: 1px solid rgba(76,200,122,.4); color: var(--e); }
+.badge-r { background: rgba(201,168,76,.18); border: 1px solid rgba(201,168,76,.5); color: var(--r); }
+.badge-s { background: rgba(82,80,106,.2); border: 1px solid rgba(82,80,106,.4); color: var(--s); }
+
+/* ── BUILD TABS (for multi-build) ── */
+.build-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.build-tab {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: .8rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  transition: all .15s;
+}
+.build-tab:hover { border-color: var(--gold); color: var(--text); }
+.build-tab.active { background: var(--gold-glow); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+.add-build-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: .8rem;
+  padding: 6px 14px;
+  transition: all .15s;
+}
+.add-build-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── EDITOR GRID ── */
+.editor-grid { display: flex; flex-direction: column; gap: 3px; }
+.editor-row {
+  display: grid;
+  grid-template-columns: 32px 36px 12px 1fr 80px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  transition: background .1s;
+}
+.editor-row.is-changed {
+  background: var(--changed-bg);
+  outline: 1px solid var(--changed-border);
+}
+.editor-row:not(.is-changed):hover { background: rgba(255,255,255,.025); }
+.row-lvl { color: var(--text-dim); font-size: .72rem; font-weight: 600; text-align: center; }
+.row-current { display: flex; justify-content: center; }
+.row-arrow { color: var(--text-dim); font-size: .75rem; text-align: center; }
+.row-options { display: flex; gap: 3px; }
+.opt-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: .72rem;
+  font-weight: 700;
+  height: 26px;
+  width: 30px;
+  transition: all .12s;
+}
+.opt-btn:hover { border-color: rgba(201,168,76,.4); color: var(--text); }
+.opt-btn.sel-q { background: rgba(61,213,220,.15); border-color: rgba(61,213,220,.5); color: var(--q); }
+.opt-btn.sel-w { background: rgba(91,142,230,.15); border-color: rgba(91,142,230,.5); color: var(--w); }
+.opt-btn.sel-e { background: rgba(76,200,122,.15); border-color: rgba(76,200,122,.5); color: var(--e); }
+.opt-btn.sel-r { background: rgba(201,168,76,.18); border-color: rgba(201,168,76,.55); color: var(--r); }
+.opt-btn.sel-s { background: rgba(82,80,106,.2); border-color: rgba(82,80,106,.5); color: var(--s); }
+.row-changed-tag { font-size: .68rem; color: var(--gold); font-weight: 600; text-align: right; }
+.row-changed-tag.was { color: var(--text-dim); }
+
+/* ── DIFF SUMMARY ── */
+.diff-summary {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 16px;
+  padding: 12px 16px;
+}
+.diff-title { font-size: .75rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+.diff-list { display: flex; flex-direction: column; gap: 4px; }
+.diff-item { font-size: .78rem; color: var(--text-dim); }
+.diff-item strong { color: var(--text); }
+.diff-from { text-decoration: line-through; opacity: .6; }
+.diff-to { color: var(--gold); font-weight: 600; }
+.no-changes { font-size: .78rem; color: var(--text-dim); font-style: italic; }
+
+/* ── LABEL EDITOR ── */
+.label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.label-row label { font-size: .78rem; color: var(--text-dim); white-space: nowrap; }
+.label-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-bright);
+  font-size: .82rem;
+  padding: 6px 10px;
+  outline: none;
+  width: 160px;
+  transition: border-color .15s;
+}
+.label-input:focus { border-color: var(--gold); }
+.remove-build-btn {
+  background: none;
+  border: 1px solid rgba(224,96,96,.3);
+  border-radius: var(--radius);
+  color: var(--error);
+  cursor: pointer;
+  font-size: .75rem;
+  margin-left: auto;
+  padding: 5px 10px;
+  opacity: .7;
+  transition: all .15s;
+}
+.remove-build-btn:hover { opacity: 1; border-color: var(--error); }
+
+/* ── SAVE AREA ── */
+.save-area { margin-top: 28px; display: flex; align-items: center; gap: 14px; }
+.save-btn {
+  background: linear-gradient(135deg, #4a3510, #8a6a28, #c9a84c, #8a6a28, #4a3510);
+  border: none;
+  border-radius: var(--radius);
+  color: #0a0a12;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  padding: 11px 28px;
+  transition: opacity .15s;
+}
+.save-btn:disabled { opacity: .35; cursor: not-allowed; }
+.save-btn:not(:disabled):hover { opacity: .85; }
+.save-status { font-size: .82rem; }
+.save-status.ok { color: var(--success); }
+.save-status.err { color: var(--error); }
+.save-status.loading { color: var(--text-dim); }
+
+/* ── PLACEHOLDER ── */
+.placeholder {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-dim);
+  font-size: .85rem;
+}
+.placeholder span { display: block; font-size: 2rem; margin-bottom: 12px; opacity: .4; }
+</style>
+</head>
+<body>
+
+<!-- ── PASSWORD GATE ── -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-icon">⚔</div>
+    <h1>W3Dota Wiki Admin</h1>
+    <p>Enter the admin password to continue</p>
+    <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+    <button id="pw-btn">Enter</button>
+    <div class="err-msg" id="pw-err"></div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="app">
+  <header class="app-header">
+    <h1>⚔ W3Dota Wiki — Admin Panel</h1>
+    <button class="logout-btn" onclick="logout()">Log out</button>
+  </header>
+  <div class="app-body">
+
+    <p class="section-heading">Skill Builds</p>
+
+    <div class="hero-selector-row">
+      <label for="hero-select">Hero</label>
+      <select id="hero-select" class="hero-select">
+        <option value="">— select a hero —</option>
+      </select>
+    </div>
+
+    <div id="editor-area">
+      <div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>
+    </div>
+
+    <div class="save-area" id="save-area" style="display:none">
+      <button class="save-btn" id="save-btn" disabled onclick="saveChanges()">Save Changes</button>
+      <span class="save-status" id="save-status"></span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────
+let password = '';
+let SKILL_BUILDS = {};
+let selectedHero = null;
+let originalBuilds = []; // [{label, build}] always normalized
+let editBuilds = [];     // [{label, build}] deep-cloned for editing
+let activeBuildIdx = 0;
+
+const LABELS = ['Q','W','E','R','S'];
+const IDX_NAMES = { 0:'Q', 1:'W', 2:'E', 3:'R', [-1]:'S' };
+const BADGE_CLS = { 'Q':'badge-q','W':'badge-w','E':'badge-e','R':'badge-r','S':'badge-s' };
+const OPT_CLS   = { 'Q':'sel-q','W':'sel-w','E':'sel-e','R':'sel-r','S':'sel-s' };
+
+// ── Auth ───────────────────────────────────────────────────
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pw-btn').click();
+});
+document.getElementById('pw-btn').addEventListener('click', () => {
+  const val = document.getElementById('pw-input').value.trim();
+  if (!val) { document.getElementById('pw-err').textContent = 'Enter a password'; return; }
+  password = val;
+  // Verify by fetching skill_builds.js (it always exists) — real auth check is server-side on save
+  loadAndEnter();
+});
+
+async function loadAndEnter() {
+  document.getElementById('pw-btn').textContent = 'Loading…';
+  document.getElementById('pw-btn').disabled = true;
+  try {
+    await loadSkillBuilds();
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    populateHeroSelect();
+  } catch(e) {
+    document.getElementById('pw-err').textContent = 'Failed to load data: ' + e.message;
+    document.getElementById('pw-btn').textContent = 'Enter';
+    document.getElementById('pw-btn').disabled = false;
+  }
+}
+
+function logout() {
+  password = '';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-err').textContent = '';
+  document.getElementById('pw-btn').textContent = 'Enter';
+  document.getElementById('pw-btn').disabled = false;
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ── Load data ──────────────────────────────────────────────
+async function loadSkillBuilds() {
+  const res = await fetch('/skill_builds.js?t=' + Date.now());
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const text = await res.text();
+  SKILL_BUILDS = new Function(text + '\nreturn SKILL_BUILDS;')();
+}
+
+// ── Hero select ────────────────────────────────────────────
+function populateHeroSelect() {
+  const sel = document.getElementById('hero-select');
+  const heroes = Object.keys(SKILL_BUILDS).sort();
+  heroes.forEach(h => {
+    const opt = document.createElement('option');
+    opt.value = h;
+    opt.textContent = h;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', () => selectHero(sel.value));
+}
+
+function selectHero(name) {
+  selectedHero = name || null;
+  document.getElementById('save-area').style.display = name ? 'flex' : 'none';
+  if (!name) {
+    document.getElementById('editor-area').innerHTML = '<div class="placeholder"><span>⚔</span>Select a hero above to start editing</div>';
+    return;
+  }
+  const raw = SKILL_BUILDS[name];
+  // Normalize to [{label, build}]
+  if (Array.isArray(raw) && raw.length > 0 && typeof raw[0] === 'object') {
+    originalBuilds = raw.map(b => ({ label: b.label, build: [...b.build] }));
+  } else {
+    originalBuilds = [{ label: null, build: [...raw] }];
+  }
+  editBuilds = originalBuilds.map(b => ({ label: b.label, build: [...b.build] }));
+  activeBuildIdx = 0;
+  renderEditor();
+}
+
+// ── Render editor ──────────────────────────────────────────
+function renderEditor() {
+  const isMulti = originalBuilds.length > 1 || originalBuilds[0].label !== null;
+  let html = '';
+
+  // Current build view (read-only strip)
+  html += '<div class="card" style="margin-bottom:20px">';
+  html += '<div class="card-header"><span class="card-title">CURRENT BUILD</span>';
+  if (originalBuilds[0].label) html += `<span class="card-label-badge">${originalBuilds[0].label}</span>`;
+  html += '</div><div class="card-body">';
+  originalBuilds.forEach((b, i) => {
+    if (i > 0) {
+      html += `<div style="margin-top:10px;margin-bottom:4px;"><span class="card-label-badge">${b.label || 'Build ' + (i+1)}</span></div>`;
+    }
+    html += renderStrip(b.build, 'current-strip-' + i);
+  });
+  html += '</div></div>';
+
+  // Build tabs if multiple
+  if (isMulti || editBuilds.length > 1) {
+    html += '<div class="build-tabs" id="build-tabs">';
+    editBuilds.forEach((b, i) => {
+      const label = b.label || `Build ${i + 1}`;
+      html += `<button class="build-tab${i === activeBuildIdx ? ' active' : ''}" onclick="switchBuild(${i})">${label}</button>`;
+    });
+    html += `<button class="add-build-btn" onclick="addBuild()">+ Add Build</button>`;
+    html += '</div>';
+  } else {
+    html += '<div class="build-tabs" id="build-tabs">';
+    html += `<button class="add-build-btn" onclick="addBuild()">+ Add a 2nd build variant</button>`;
+    html += '</div>';
+  }
+
+  // Active build editor
+  const b = editBuilds[activeBuildIdx];
+  const orig = originalBuilds[activeBuildIdx] || { label: null, build: new Array(18).fill(-1) };
+
+  html += '<div class="card"><div class="card-header">';
+  html += `<span class="card-title">EDITING</span>`;
+  if (editBuilds.length > 1) {
+    html += `<div class="label-row" style="margin:0;flex:1;margin-left:10px">`;
+    html += `<label for="label-input-${activeBuildIdx}">Label:</label>`;
+    html += `<input class="label-input" id="label-input-${activeBuildIdx}" value="${b.label || ''}" placeholder="e.g. Core" oninput="updateLabel(this.value)">`;
+    html += `<button class="remove-build-btn" onclick="removeBuild(${activeBuildIdx})">Remove this build</button>`;
+    html += `</div>`;
+  }
+  html += '</div><div class="card-body">';
+
+  html += '<div class="editor-grid">';
+  for (let i = 0; i < 18; i++) {
+    const curVal = b.build[i];
+    const origVal = orig.build[i];
+    const changed = curVal !== origVal;
+    const curLetter = IDX_NAMES[curVal] ?? 'S';
+    html += `<div class="editor-row${changed ? ' is-changed' : ''}" id="row-${i}">`;
+    html += `<span class="row-lvl">Lv${i+1}</span>`;
+    html += `<div class="row-current">${badgeHTML(curLetter)}</div>`;
+    html += `<span class="row-arrow">→</span>`;
+    html += `<div class="row-options">`;
+    ['Q','W','E','R','S'].forEach(letter => {
+      const isSel = curLetter === letter;
+      html += `<button class="opt-btn${isSel ? ' ' + OPT_CLS[letter] : ''}" onclick="setSlot(${i}, '${letter}')">${letter}</button>`;
+    });
+    html += `</div>`;
+    if (changed) {
+      html += `<span class="row-changed-tag"><span class="diff-from">${IDX_NAMES[origVal] ?? 'S'}</span> → ${curLetter}</span>`;
+    } else {
+      html += `<span class="row-changed-tag was"></span>`;
+    }
+    html += `</div>`;
+  }
+  html += '</div>';
+  html += diffSummaryHTML();
+  html += '</div></div>';
+
+  document.getElementById('editor-area').innerHTML = html;
+  updateSaveBtn();
+}
+
+function renderStrip(build, id) {
+  let html = `<div class="skill-strip" id="${id}">`;
+  build.forEach((v, i) => {
+    const letter = IDX_NAMES[v] ?? 'S';
+    html += `<div class="strip-cell"><div class="strip-badge ${BADGE_CLS[letter]}">${letter}</div><div class="strip-lvl">${i+1}</div></div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function badgeHTML(letter) {
+  return `<div class="strip-badge ${BADGE_CLS[letter]}" style="width:30px;height:30px">${letter}</div>`;
+}
+
+function diffSummaryHTML() {
+  const b = editBuilds[activeBuildIdx];
+  const orig = originalBuilds[activeBuildIdx] || { build: new Array(18).fill(-1) };
+  const diffs = [];
+  b.build.forEach((v, i) => {
+    if (v !== (orig.build[i] ?? -1)) {
+      diffs.push({ lvl: i+1, from: IDX_NAMES[orig.build[i]] ?? 'S', to: IDX_NAMES[v] ?? 'S' });
+    }
+  });
+
+  let html = '<div class="diff-summary">';
+  html += `<div class="diff-title">${diffs.length > 0 ? diffs.length + ' pending change' + (diffs.length !== 1 ? 's' : '') : 'No changes yet'}</div>`;
+  html += '<div class="diff-list">';
+  if (diffs.length === 0) {
+    html += '<span class="no-changes">Edit the skill order above — changes will appear here</span>';
+  } else {
+    diffs.forEach(d => {
+      html += `<div class="diff-item">Level <strong>${d.lvl}</strong>: <span class="diff-from">${d.from}</span> → <span class="diff-to">${d.to}</span></div>`;
+    });
+  }
+  html += '</div></div>';
+  return html;
+}
+
+// ── Interactions ───────────────────────────────────────────
+function switchBuild(idx) {
+  activeBuildIdx = idx;
+  renderEditor();
+}
+
+function setSlot(levelIdx, letter) {
+  const valMap = { Q:0, W:1, E:2, R:3, S:-1 };
+  editBuilds[activeBuildIdx].build[levelIdx] = valMap[letter];
+  renderEditor();
+}
+
+function updateLabel(val) {
+  editBuilds[activeBuildIdx].label = val;
+}
+
+function addBuild() {
+  // If this is the first label-less build, give it a label first
+  if (editBuilds.length === 1 && !editBuilds[0].label) {
+    editBuilds[0].label = 'Build 1';
+    if (originalBuilds[0].label === null) originalBuilds[0].label = 'Build 1';
+  }
+  editBuilds.push({ label: 'Build ' + (editBuilds.length + 1), build: new Array(18).fill(-1) });
+  originalBuilds.push({ label: null, build: new Array(18).fill(-1) });
+  activeBuildIdx = editBuilds.length - 1;
+  renderEditor();
+}
+
+function removeBuild(idx) {
+  if (editBuilds.length <= 1) return;
+  editBuilds.splice(idx, 1);
+  originalBuilds.splice(idx, 1);
+  activeBuildIdx = Math.min(activeBuildIdx, editBuilds.length - 1);
+  renderEditor();
+}
+
+function hasChanges() {
+  if (editBuilds.length !== originalBuilds.length) return true;
+  for (let bi = 0; bi < editBuilds.length; bi++) {
+    const eb = editBuilds[bi];
+    const ob = originalBuilds[bi];
+    if (eb.label !== ob.label) return true;
+    for (let i = 0; i < 18; i++) {
+      if (eb.build[i] !== (ob.build[i] ?? -1)) return true;
+    }
+  }
+  return false;
+}
+
+function updateSaveBtn() {
+  const btn = document.getElementById('save-btn');
+  if (btn) btn.disabled = !hasChanges();
+}
+
+// ── Save ───────────────────────────────────────────────────
+async function saveChanges() {
+  const btn = document.getElementById('save-btn');
+  const status = document.getElementById('save-status');
+  btn.disabled = true;
+  status.className = 'save-status loading';
+  status.textContent = 'Saving…';
+
+  // Determine what to send
+  // If single build with no label, send plain array; otherwise send [{label, build}]
+  let builds;
+  if (editBuilds.length === 1 && !editBuilds[0].label) {
+    builds = editBuilds[0].build;
+  } else {
+    builds = editBuilds.map(b => ({ label: b.label || '', build: b.build }));
+  }
+
+  try {
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Password': password,
+      },
+      body: JSON.stringify({ heroName: selectedHero, builds }),
+    });
+    const data = await res.json();
+
+    if (res.status === 409) {
+      status.className = 'save-status err';
+      status.textContent = data.error;
+      btn.disabled = false;
+      return;
+    }
+    if (!res.ok) {
+      status.className = 'save-status err';
+      status.textContent = data.error || 'Save failed';
+      btn.disabled = false;
+      return;
+    }
+
+    // Success — update local state and refresh SKILL_BUILDS
+    status.className = 'save-status ok';
+    status.textContent = '✓ Saved! Redeploying (~30s)…';
+    originalBuilds = editBuilds.map(b => ({ label: b.label, build: [...b.build] }));
+    SKILL_BUILDS[selectedHero] = builds;
+    setTimeout(() => { status.textContent = ''; updateSaveBtn(); }, 5000);
+
+  } catch(e) {
+    status.className = 'save-status err';
+    status.textContent = 'Network error — check your connection';
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
