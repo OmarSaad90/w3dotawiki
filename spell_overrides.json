@@ -3,5 +3,11 @@
     "Berserker's Call": {
       "CD": "16/14/12/10"
     }
+  },
+  "Beastmaster": {
+    "Wild Axes": {
+      "Armor Red.": "0",
+      "desc": "Throws axes that damages enemies"
+    }
   }
 }
