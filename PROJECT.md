@@ -13,15 +13,29 @@ A single-page HTML wiki for **W3Dota Allstars (DotA 1) version 6.89**, featuring
 ```
 wiki/
 ├── index.html               # The entire app — CSS + HTML shell + all JS/data (inline)
+├── admin.html               # Admin panel — authenticated editor for skill builds + spell values
 ├── items_data.js            # HERO_ITEMS object: top community items per hero
 ├── skill_builds.js          # SKILL_BUILDS object: 18-level skill order per hero (all 112)
 ├── matchups.js              # HERO_MATCHUPS object: countered_by/counters/good_with (all 112)
 ├── hero_stats.js            # HERO_STATS object: base stats scraped from iccup (all 112)
+├── spell_overrides.json     # Spell stat + description overrides written by admin panel
+├── vercel.json              # Vercel rewrites (/admin → /admin.html) + security headers
 ├── scrape_hero_stats.py     # Script that generated hero_stats.js — re-run to refresh data
 ├── SpellIcons/              # Local .jpg spell icon files (BTN*.jpg, WC3-style icons)
+│   ├── spellsfix/           # PNG overrides for abilities with bad/missing BTN icons
+│   └── portraits/           # Custom hero portrait overrides (e.g. witch_doctor.png)
 ├── dota2_fallback_icons.txt # Running list of abilities still using D2 fallback (79 as of Apr 17)
 ├── spells.txt               # User-collected WoW Classic icon URLs mapped to abilities
 └── PROJECT.md               # This file
+
+api/                         # Vercel serverless functions (ESM, not exposed as routes if _ prefixed)
+├── _auth.js                 # Shared: makeToken(), validateSession(), safeEq(), setCookie/clearCookie
+├── login.js                 # POST — rate-limited login, returns signed session cookie
+├── check-auth.js            # GET — validates session cookie → 200 or 401
+├── logout.js                # POST — clears session cookie
+├── save.js                  # POST — write skill build changes to skill_builds.js on GitHub
+├── save-spell.js            # POST — write spell stat/desc overrides to spell_overrides.json on GitHub
+└── save-matchup.js          # POST — write matchup changes to matchups.js on GitHub
 ```
 
 ---
@@ -199,13 +213,22 @@ Accessed via the **✎ Guides** filter button. Replaces the hero grid with a 2-c
 All 112 heroes covered. 100 scraped from DotaFire, 12 written manually:
 > Centaur Warrunner, Io, Storm Spirit, Shadow Demon, Queen of Pain, Razor, Techies, Enchantress, Chen, Slardar, Pit Lord, Legion Commander
 
-Stored in `skill_builds.js`:
+Stored in `skill_builds.js` — two supported formats (backward-compatible):
+
 ```js
 const SKILL_BUILDS = {
+  // Single build — flat array (original format)
   "Hero Name": [0, 1, 0, 2, 0, 3, ...],  // 18 entries: 0=Q, 1=W, 2=E, 3=R, -1=stats
-  ...
+
+  // Multiple named builds — array of objects
+  "Hero Name": [
+    { label: "Carry", build: [0, 0, 1, 0, 1, 3, ...] },
+    { label: "Support", build: [1, 0, 1, 0, 2, 3, ...] },
+  ],
 }
 ```
+
+Detection: `renderHero()` checks `Array.isArray(build[0])` — if the first element is an object (has `.label`), it renders a tab strip to switch between named builds. Otherwise renders the flat array directly. Tabs are styled gold; active tab is highlighted.
 
 Rendered as a scrollable icon strip labelled **"Suggested Skill Order"** on each hero card. Ultimates get a gold border glow. The horizontal scrollbar is styled gold to match the page theme.
 
@@ -281,6 +304,7 @@ Enhancements included:
 | Chen | 3rd ability | **Holy Persuasion** (moved from 2nd slot) |
 | Invoker | All abilities | Reworked from combined-orb representation to 4 clean abilities: **Quas / Wex / Exort / Invoke** (ultimate). Stats per-instance. Invoke opens the invoked spells modal. |
 | Sand King | Burrowstrike icon | Changed from `spellsfix/burrowstrike.png` → `BTNEarthSpike` (same visual, already in SpellIcons root) |
+| Abaddon | Curse of Avernus | Wrong description replaced. Correct: passive — attacks freeze the target, slow MS 5/10/15/20%, grant Abaddon +15% MS, and grant allies attacking the frozen target +10/20/30/40% attack speed. Stats: `MS Slow`, `Atk Speed`, `Abaddon MS`. |
 
 **Hero name corrections (applied across all files):**
 - "Underlord" → **Pit Lord** (`index.html`, `hero_stats.js`, `skill_builds.js`, `matchups.js`, `items_data.js`, `scrape_hero_stats.py`)
@@ -316,3 +340,201 @@ Normalized search: both the query and the stored `data-search` value have spaces
 - Project: `w3dotawiki`
 - Live: https://w3dotawiki.vercel.app
 - Deploy command: `vercel --prod` from the wiki directory
+
+---
+
+## Admin Panel (`/admin`)
+
+**URL:** `/admin` (rewritten to `admin.html` via `vercel.json`)  
+**Auth:** HMAC-SHA256 signed session cookie. Cookie is `HttpOnly; Secure; SameSite=Strict; Max-Age=43200` (12 hours). Password checked via constant-time comparison in `api/_auth.js`.
+
+### Auth Flow
+
+1. `check-auth.js` (GET) — called on load; returns 200 if cookie valid, 401 otherwise
+2. If 401 → show login form; if 200 → `enterApp()`
+3. `login.js` (POST) — rate-limited (5 attempts / 15 min per IP); on success returns signed cookie via `Set-Cookie`
+4. `logout.js` (POST) — clears cookie, resets UI to login form via `backToMain()`
+
+### UI Layout
+
+```
+[ ← Back ]  [ 🔓 Logout ]
+
+[ Hero picker portrait + label "— select a hero —" ]
+[ 112-hero scrollable grid ]
+
+[ Hero banner (portrait + name) ]          ← shows after selection
+[ ⚔ Skill Order         Open ▾ ]          ← collapsible card
+[ ✨ Spell Values         Open ▾ ]          ← collapsible card
+[ ⚔ Matchups            Open ▾ ]          ← collapsible card
+```
+
+**Back button** — deselects the hero and resets all state without navigating away. Implemented as `backToMain()` which clears `selectedHero`, resets ability state vars, closes any open matchup picker, hides `sections-container` and `hero-banner`.
+
+**Collapsible sections** — toggled by `toggleSection(which)`. CSS: `.collapsible-section.is-open .collapsible-body { display: block }`. Header shows "Open ▾" / "Collapse ▴".
+
+### Skill Order Editor
+
+Inside the **⚔ Skill Order** collapsible:
+- Shows current 18-slot skill build loaded from `skill_builds.js` (served as a static file)
+- 18 clickable/draggable slots — each cycles through Q/W/E/R/-1(Stats)
+- Ability icons use `getSpellIconAdmin()` (same priority as index.html: DotA1 BTN → WoW → DotA2)
+- Diff summary shows changed slots before saving
+- Save POSTs to `/api/save` → writes `skill_builds.js` to GitHub → triggers Vercel deploy hook
+
+### Spell Values Editor
+
+Inside the **✦ Spell Values** collapsible. Loads asynchronously when section is opened:
+
+1. `loadAbilityStatData(heroName)` — fetches `index.html` source once (cached in `indexSource`), regex-parses the hero's abilities block to extract ability names, descriptions, and `pill(...)` stat calls
+2. `loadSpellOverrides()` — fetches `spell_overrides.json` once at `enterApp()`, cached in `spellOverridesData`
+3. `renderSpellEditor()` — builds one card per ability showing:
+   - Ability icon + name
+   - Description textarea (pre-filled with current or overridden desc)
+   - Stat rows: each `pill(type, label, value)` becomes a labelled input pre-filled with current value
+4. Changes tracked in `spellEditValues` / `spellEditDesc` vs `spellCurrentValues` / `spellCurrentDesc`
+5. **Diff summary** shown before save: stat changes as `Label: old → new`, desc truncated to 50 chars
+6. Save POSTs to `/api/save-spell` → writes `spell_overrides.json` to GitHub → triggers deploy hook
+7. After successful save, `spellCurrentValues` / `spellCurrentDesc` updated locally (no re-fetch needed)
+
+### Matchup Editor
+
+Inside the **⚔ Matchups** collapsible. Loaded at hero select time from `HERO_MATCHUPS_DATA` (parsed from `matchups.js` fetched once at `enterApp()`):
+
+- Displays 3 categories in rows: **Countered By** (red), **Good Against** (green), **Good With** (blue)
+- Each hero shown as a 60×52px portrait tile with name label underneath
+- Hover a tile → overlay shows ✎ Replace and ✕ Remove buttons
+- `+` button at the end of each row opens the hero picker modal
+- **Hero picker modal** — fixed overlay with search-as-you-type + portrait list (same 112-hero pool as the main picker); click a hero to insert/replace
+- Changed slots get a gold outline highlight (`is-changed` class)
+- Diff summary at the bottom lists all pending changes (added / removed / replaced per category)
+- Save POSTs to `/api/save-matchup` → writes `matchups.js` to GitHub → triggers deploy hook
+- After save, `originalMatchup` and `HERO_MATCHUPS_DATA` updated locally; highlights clear
+
+**State vars:** `HERO_MATCHUPS_DATA` (full parsed file), `originalMatchup` / `editMatchup` (per-hero copies), `matchupPickerCategory` / `matchupPickerSlotIdx` (picker context).
+
+### Icon Resolution in Admin Panel
+
+`getSpellIconAdmin()` uses the same four-tier lookup as `index.html`:
+- Full `SPELL_ICONS` map is copied into `admin.html`
+- Priority: `SPELL_ICONS` (DotA1 BTN) → `WOW_ICONS` → `DOTA2_ICONS` explicit → DotA2 auto-fallback
+
+---
+
+## Spell Override System
+
+### File: `spell_overrides.json`
+
+Written by the admin panel, read at runtime by `index.html`. Structure:
+
+```json
+{
+  "HeroName": {
+    "AbilityName": {
+      "StatLabel": "new value",
+      "desc": "override description text"
+    }
+  }
+}
+```
+
+- Stat keys match the label strings exactly as written in `pill("type","Label","value")` calls in `index.html`
+- `desc` is a special key — not a stat, treated separately in both apply logic and validation
+- Empty-string stat values are deleted (used to "clear" an override back to source data)
+- Empty ability objects and empty hero objects are pruned automatically by `applyChanges()`
+- File starts as `{}` and grows as overrides are added
+
+### How `index.html` Applies Overrides
+
+```js
+let SPELL_OVERRIDES = {};
+fetch('/spell_overrides.json?t='+Date.now())
+  .then(r => r.json())
+  .then(o => { SPELL_OVERRIDES = o; initGrid(); render(); })
+  .catch(() => {});
+initGrid(); // also runs immediately so page works if fetch is slow
+```
+
+`renderAbility()` checks `SPELL_OVERRIDES[heroName][ability.name]` and:
+1. Replaces `ability.desc` with `ovr.desc` if present
+2. For each stat pill HTML string, regex-replaces `<b>Label</b> value` with the override value
+
+### API: `save-spell.js`
+
+- **Method:** POST  
+- **Auth:** session cookie validated via `validateSession()`  
+- **Body:** `{ heroName, changes: [{ abilityName, stats: { Label: value }, desc?: string }] }`
+- **Validation:**
+  - `heroName`: `HERO_RE = /^[A-Za-z0-9 '\-\.]+$/`, length 2–60
+  - `abilityName`: `ABILITY_RE = /^[A-Za-z0-9 '\-\.\(\)!]+$/`, length 1–60
+  - stat labels/values: `SAFE_RE = /^[^<>"\\]{1,100}$/`
+  - desc: `DESC_RE = /^[^<>"\\]{1,600}$/` — max 600 chars, no `<`, `>`, `"`, or `\`
+- **Conflict handling:** 409 → re-fetch latest SHA + retry once (same pattern as `save.js`)
+- **On success:** triggers `VERCEL_DEPLOY_HOOK`
+
+---
+
+## Portrait Overrides
+
+`PORTRAIT_OVERRIDES` object in `index.html` (and mirrored in `admin.html`) maps hero names to custom portrait paths. Used when iccup CDN portrait is wrong or missing.
+
+```js
+const PORTRAIT_OVERRIDES = {
+  "Hero Name": "https://path/to/custom/portrait.png",
+  ...
+};
+```
+
+`getPortrait(heroName)` checks `PORTRAIT_OVERRIDES[heroName]` first; falls back to iccup CDN via `SLUGS` map.
+
+Custom portrait files live in `SpellIcons/portraits/` in the `OmarSaad90/SpellIcons` GitHub repo and are served from `https://raw.githubusercontent.com/OmarSaad90/SpellIcons/main/portraits/`.
+
+---
+
+## Security
+
+### Authentication (`api/_auth.js`)
+
+- Session cookie: `session=<timestamp>.<hmac>` — HMAC-SHA256 signed with `SESSION_SECRET` env var
+- `makeToken()` signs `timestamp` string; `validateSession()` re-computes HMAC and compares with `safeEq()` (constant-time, prevents timing attacks)
+- Cookie flags: `HttpOnly; Secure; SameSite=Strict; Max-Age=43200`
+- Sessions expire after 12 hours (validated by timestamp check in `validateSession()`)
+
+### Rate Limiting (`api/login.js`)
+
+- In-memory map: `{ ip → { count, resetAt } }` — 5 attempts per 15-minute window
+- `429` returned with `Retry-After` header when limit exceeded
+- IP extracted from `x-forwarded-for` header (Vercel always sets this)
+
+### CORS
+
+All write APIs (`save.js`, `save-spell.js`) set:
+```
+Access-Control-Allow-Origin: https://w3dotawiki.vercel.app
+Vary: Origin
+Access-Control-Allow-Methods: POST, OPTIONS
+```
+Origin checked against the hardcoded `ORIGIN` constant — mismatched origins receive no CORS headers and the preflight is rejected.
+
+### HTTP Security Headers (`vercel.json`)
+
+Applied to all routes:
+```
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+```
+
+Admin and API routes additionally get:
+```
+Cache-Control: no-store
+```
+
+### Input Validation
+
+All user-supplied data validated server-side with strict regex before writing to GitHub:
+- Hero/ability names: alphanumeric + limited punctuation only
+- Stat labels/values: no `<>"\\`, max 100 chars
+- Descriptions: no `<>"\\`, max 600 chars
+- Skill build arrays: validated for length (18 slots) and value range (0–3 and -1)

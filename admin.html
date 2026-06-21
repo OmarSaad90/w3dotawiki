@@ -304,6 +304,55 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .spell-desc-section.is-changed { background: var(--changed-bg); outline: 1px solid var(--changed-border); }
 .spell-desc-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .spell-desc-input { resize: vertical; min-height: 54px; line-height: 1.5; }
+
+/* ── MATCHUP EDITOR ── */
+.matchup-editor { display: flex; flex-direction: column; gap: 18px; }
+.matchup-category-label { font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.matchup-slots { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+.matchup-slot { flex-shrink: 0; width: 60px; }
+.matchup-slot.is-changed .matchup-slot-img-wrap { outline: 2px solid var(--changed-border); outline-offset: 1px; }
+.matchup-slot-img-wrap { position: relative; width: 60px; height: 52px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+.matchup-slot-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.matchup-slot-placeholder { width: 100%; height: 100%; background: var(--surface2); }
+.matchup-slot-actions { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 3px; background: rgba(0,0,0,.65); }
+.matchup-slot-img-wrap:hover .matchup-slot-actions { display: flex; }
+.matchup-slot-action-btn { background: rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.25); border-radius: 3px; color: #fff; cursor: pointer; font-size: .62rem; line-height: 1; padding: 3px 5px; transition: background .1s; }
+.matchup-slot-action-btn:hover { background: rgba(201,168,76,.5); border-color: var(--gold); }
+.matchup-slot-name { font-size: .58rem; color: var(--text-dim); text-align: center; margin-top: 3px; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.matchup-add-btn { width: 60px; height: 52px; border-radius: 6px; flex-shrink: 0; align-self: flex-start; background: none; border: 1px dashed var(--border); color: var(--text-dim); cursor: pointer; font-size: 1.4rem; line-height: 1; transition: all .15s; }
+.matchup-add-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── BASE STATS EDITOR ── */
+.stats-section-label { font-size: .7rem; font-weight: 600; color: var(--text-dim); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; margin-top: 4px; }
+.stats-attr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.stats-combat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stat-field { display: flex; flex-direction: column; gap: 4px; }
+.stat-field-label { font-size: .7rem; color: var(--text-dim); font-weight: 600; letter-spacing: .04em; }
+.stat-field-label.str { color: #e07070; } .stat-field-label.agi { color: #70c87a; } .stat-field-label.int { color: #70a0e0; }
+.stat-field-input {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
+  color: var(--text-bright); font-family: 'Inter', sans-serif; font-size: .85rem;
+  padding: 6px 10px; outline: none; width: 100%; transition: border-color .15s;
+}
+.stat-field-input:focus { border-color: var(--gold); }
+.stat-field.is-changed .stat-field-input { border-color: var(--changed-border); background: var(--changed-bg); }
+.stat-field-hint { font-size: .62rem; color: var(--text-dim); }
+
+/* ── MATCHUP PICKER MODAL ── */
+.matchup-picker-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 400; display: flex; align-items: center; justify-content: center; }
+.matchup-picker-modal { background: var(--surface); border: 1px solid var(--border-gold); border-radius: 10px; width: 360px; max-height: 500px; display: flex; flex-direction: column; box-shadow: 0 16px 60px rgba(0,0,0,.85); overflow: hidden; }
+.matchup-picker-header { display: flex; align-items: center; justify-content: space-between; background: var(--surface2); padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.matchup-picker-title { font-family: 'Cinzel', serif; font-size: .76rem; color: var(--gold); letter-spacing: .06em; }
+.matchup-picker-close { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: .95rem; padding: 2px 6px; transition: color .15s; }
+.matchup-picker-close:hover { color: var(--gold); }
+.matchup-picker-search { width: 100%; background: var(--surface2); border: none; border-bottom: 1px solid var(--border); color: var(--text-bright); font-size: .85rem; padding: 10px 14px; outline: none; font-family: 'Inter', sans-serif; flex-shrink: 0; }
+.matchup-picker-list { overflow-y: auto; flex: 1; }
+.matchup-picker-list::-webkit-scrollbar { width: 4px; }
+.matchup-picker-list::-webkit-scrollbar-thumb { background: var(--border-gold); border-radius: 4px; }
+.matchup-picker-item { display: flex; align-items: center; gap: 10px; padding: 7px 14px; cursor: pointer; transition: background .1s; }
+.matchup-picker-item:hover { background: var(--gold-glow); }
+.matchup-picker-item img { width: 44px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); flex-shrink: 0; }
+.matchup-picker-item-name { color: var(--text); font-size: .85rem; }
 </style>
 </head>
 <body>
@@ -374,6 +423,38 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
             <div class="save-area" id="spell-save-area" style="display:none">
               <button class="save-btn" id="spell-save-btn" disabled onclick="saveSpellChanges()">Save Spell Values</button>
               <span class="save-status" id="spell-save-status"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible-section" id="section-matchup">
+        <div class="collapsible-header" onclick="toggleSection('matchup')">
+          <span class="collapsible-title">⚔ Matchups</span>
+          <span class="collapsible-toggle" id="toggle-matchup">Open ▾</span>
+        </div>
+        <div class="collapsible-body">
+          <div style="padding:16px 16px 8px">
+            <div id="matchup-editor-area"></div>
+            <div class="save-area" id="matchup-save-area" style="display:none">
+              <button class="save-btn" id="matchup-save-btn" disabled onclick="saveMatchupChanges()">Save Matchups</button>
+              <span class="save-status" id="matchup-save-status"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible-section" id="section-stats">
+        <div class="collapsible-header" onclick="toggleSection('stats')">
+          <span class="collapsible-title">◈ Base Stats</span>
+          <span class="collapsible-toggle" id="toggle-stats">Open ▾</span>
+        </div>
+        <div class="collapsible-body">
+          <div style="padding:16px 16px 8px">
+            <div id="stats-editor-area"></div>
+            <div class="save-area" id="stats-save-area" style="display:none">
+              <button class="save-btn" id="stats-save-btn" disabled onclick="saveStatsChanges()">Save Base Stats</button>
+              <span class="save-status" id="stats-save-status"></span>
             </div>
           </div>
         </div>
@@ -711,6 +792,26 @@ const OPT_CLS   = {'Q':'sel-q','W':'sel-w','E':'sel-e','R':'sel-r','S':'sel-s'};
 const KEY_LABELS = ['Q','W','E','R'];
 const KEY_COLORS = ['key-q','key-w','key-e','key-r'];
 
+// ── Base stats state ──────────────────────────────────────
+let HERO_STATS_DATA = {};
+let originalStats = null;
+let editStats = null;
+
+const STAT_FIELDS = [
+  { key:'str',      label:'STR',      cls:'str',  group:'attrs',  hint:'e.g. 23+2.7' },
+  { key:'agi',      label:'AGI',      cls:'agi',  group:'attrs',  hint:'e.g. 17+1.5' },
+  { key:'int',      label:'INT',      cls:'int',  group:'attrs',  hint:'e.g. 21+2'   },
+  { key:'dmg',      label:'DMG',      cls:'',     group:'combat', hint:'e.g. 55-65'  },
+  { key:'armor',    label:'Armor',    cls:'',     group:'combat', hint:'e.g. 1'      },
+  { key:'range',    label:'Range',    cls:'',     group:'combat', hint:'e.g. 128'    },
+  { key:'ms',       label:'MS',       cls:'',     group:'combat', hint:'e.g. 310'    },
+  { key:'as',       label:'BAT',      cls:'',     group:'combat', hint:'e.g. 1.7'    },
+  { key:'hp',       label:'HP',       cls:'',     group:'combat', hint:'e.g. 587'    },
+  { key:'hpPerLvl', label:'HP/lvl',   cls:'',     group:'combat', hint:'e.g. 57'     },
+  { key:'mp',       label:'Mana',     cls:'',     group:'combat', hint:'e.g. 273'    },
+  { key:'mpPerLvl', label:'Mana/lvl', cls:'',     group:'combat', hint:'e.g. 26'     },
+];
+
 // ── Auth ───────────────────────────────────────────────────
 (async () => {
   const res = await fetch('/api/check-auth');
@@ -724,7 +825,7 @@ function showGate() {
 async function enterApp() {
   document.getElementById('gate').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  await Promise.all([loadSkillBuilds(), loadSpellOverrides()]);
+  await Promise.all([loadSkillBuilds(), loadSpellOverrides(), loadMatchups(), loadHeroStatsData()]);
   initPicker();
 }
 
@@ -764,13 +865,16 @@ function backToMain() {
   selectedHero = null;
   currentAbilityNames = [null,null,null,null]; currentAbilityIcons = [null,null,null,null];
   spellAbilities = []; spellCurrentValues = {}; spellEditValues = {}; spellCurrentDesc = {}; spellEditDesc = {};
+  originalMatchup = null; editMatchup = null;
+  originalStats = null; editStats = null;
+  closeMatchupPicker();
   document.getElementById('picker-portrait-img').style.display = 'none';
   document.getElementById('picker-label').textContent = '— select a hero —';
   document.getElementById('hero-banner').style.display = 'none';
   document.getElementById('sections-container').style.display = 'none';
   document.getElementById('back-btn').style.display = 'none';
-  // Collapse both sections
-  ['skill','spell'].forEach(w => {
+  // Collapse all sections
+  ['skill','spell','matchup','stats'].forEach(w => {
     document.getElementById(`section-${w}`).classList.remove('is-open');
     document.getElementById(`toggle-${w}`).textContent = 'Open ▾';
   });
@@ -778,6 +882,10 @@ function backToMain() {
   document.getElementById('save-area').style.display = 'none';
   document.getElementById('spell-editor-area').innerHTML = '';
   document.getElementById('spell-save-area').style.display = 'none';
+  document.getElementById('matchup-editor-area').innerHTML = '';
+  document.getElementById('matchup-save-area').style.display = 'none';
+  document.getElementById('stats-editor-area').innerHTML = '';
+  document.getElementById('stats-save-area').style.display = 'none';
 }
 
 function toggleSection(which) {
@@ -876,6 +984,12 @@ async function selectHero(name) {
   // Spell editor
   spellAbilities = await loadAbilityStatData(name);
   renderSpellEditor(name);
+
+  // Matchup editor
+  renderMatchupEditor(name);
+
+  // Stats editor
+  renderStatsEditor(name);
 
   // Show sections + back button
   document.getElementById('sections-container').style.display = 'block';
@@ -1249,6 +1363,354 @@ async function saveSpellChanges() {
     status.className = 'save-status ok';
     status.textContent = '✓ Saved! Redeploying (~30s)…';
     setTimeout(() => { status.textContent = ''; updateSpellSaveBtn(); }, 5000);
+  } catch {
+    status.className = 'save-status err';
+    status.textContent = 'Network error — check your connection';
+    btn.disabled = false;
+  }
+}
+
+// ── Matchup state ─────────────────────────────────────────
+let HERO_MATCHUPS_DATA = {};
+let originalMatchup = null;
+let editMatchup = null;
+let matchupPickerCategory = null;
+let matchupPickerSlotIdx = null;
+
+const MATCHUP_CATS = [
+  { key:'countered_by', label:'Countered By', color:'#e06060' },
+  { key:'counters',     label:'Good Against',  color:'#4cc87a' },
+  { key:'good_with',    label:'Good With',     color:'#5b8ee6' },
+];
+
+async function loadMatchups() {
+  try {
+    const res = await fetch('/matchups.js?t=' + Date.now());
+    const text = await res.text();
+    HERO_MATCHUPS_DATA = new Function(text + '\nreturn HERO_MATCHUPS;')();
+  } catch {}
+}
+
+function renderMatchupEditor(heroName) {
+  document.getElementById('matchup-save-area').style.display = 'flex';
+  const m = HERO_MATCHUPS_DATA[heroName];
+  if (!m) {
+    originalMatchup = { countered_by:[], counters:[], good_with:[] };
+    editMatchup     = { countered_by:[], counters:[], good_with:[] };
+  } else {
+    originalMatchup = { countered_by:[...m.countered_by], counters:[...m.counters], good_with:[...m.good_with] };
+    editMatchup     = { countered_by:[...m.countered_by], counters:[...m.counters], good_with:[...m.good_with] };
+  }
+  redrawMatchupEditor();
+}
+
+function redrawMatchupEditor() {
+  let html = '<div class="matchup-editor">';
+  for (const cat of MATCHUP_CATS) {
+    const heroes = editMatchup[cat.key] || [];
+    html += `<div class="matchup-category">`;
+    html += `<div class="matchup-category-label" style="color:${cat.color}">${esc(cat.label)}</div>`;
+    html += `<div class="matchup-slots">`;
+    heroes.forEach((h, i) => {
+      const portrait = getPortrait(h);
+      const orig = originalMatchup[cat.key] || [];
+      const changed = i >= orig.length || orig[i] !== h;
+      html += `<div class="matchup-slot${changed ? ' is-changed' : ''}">`;
+      html += `<div class="matchup-slot-img-wrap">`;
+      if (portrait) html += `<img src="${esc(portrait)}" alt="${esc(h)}" onerror="this.style.opacity='0'">`;
+      else html += `<div class="matchup-slot-placeholder"></div>`;
+      html += `<div class="matchup-slot-actions">`;
+      html += `<button class="matchup-slot-action-btn" data-cat="${cat.key}" data-idx="${i}" onclick="openMatchupPicker(this.dataset.cat,parseInt(this.dataset.idx))" title="Replace">✎</button>`;
+      html += `<button class="matchup-slot-action-btn" data-cat="${cat.key}" data-idx="${i}" onclick="removeMatchupHero(this.dataset.cat,parseInt(this.dataset.idx))" title="Remove">✕</button>`;
+      html += `</div></div>`;
+      html += `<div class="matchup-slot-name">${esc(h)}</div>`;
+      html += `</div>`;
+    });
+    html += `<button class="matchup-add-btn" data-cat="${cat.key}" onclick="openMatchupPicker(this.dataset.cat,null)" title="Add hero">+</button>`;
+    html += `</div></div>`;
+  }
+
+  const diffs = getMatchupDiffs();
+  html += `<div class="diff-summary"><div class="diff-title">${diffs.length ? diffs.length + ' pending change' + (diffs.length !== 1 ? 's' : '') : 'No changes yet'}</div><div class="diff-list">`;
+  if (!diffs.length) html += '<span class="no-changes">Edit matchups above — hover slots to replace or remove</span>';
+  else html += diffs.map(d => `<div class="diff-item"><strong>${esc(d.catLabel)}</strong>: ${d.desc}</div>`).join('');
+  html += '</div></div></div>';
+
+  document.getElementById('matchup-editor-area').innerHTML = html;
+  updateMatchupSaveBtn();
+}
+
+function getMatchupDiffs() {
+  const diffs = [];
+  for (const cat of MATCHUP_CATS) {
+    const orig = (originalMatchup && originalMatchup[cat.key]) || [];
+    const edit = (editMatchup && editMatchup[cat.key]) || [];
+    const maxLen = Math.max(orig.length, edit.length);
+    for (let i = 0; i < maxLen; i++) {
+      if (orig[i] !== edit[i]) {
+        if (i >= orig.length) diffs.push({ catLabel: cat.label, desc: `Added <span class="diff-to">${esc(edit[i])}</span>` });
+        else if (i >= edit.length) diffs.push({ catLabel: cat.label, desc: `Removed <span class="diff-from">${esc(orig[i])}</span>` });
+        else diffs.push({ catLabel: cat.label, desc: `<span class="diff-from">${esc(orig[i])}</span> → <span class="diff-to">${esc(edit[i])}</span>` });
+      }
+    }
+  }
+  return diffs;
+}
+
+function hasMatchupChanges() {
+  if (!originalMatchup || !editMatchup) return false;
+  for (const cat of MATCHUP_CATS) {
+    const orig = originalMatchup[cat.key] || [];
+    const edit = editMatchup[cat.key] || [];
+    if (orig.length !== edit.length) return true;
+    for (let i = 0; i < orig.length; i++) if (orig[i] !== edit[i]) return true;
+  }
+  return false;
+}
+
+function updateMatchupSaveBtn() {
+  const b = document.getElementById('matchup-save-btn');
+  if (b) b.disabled = !hasMatchupChanges();
+}
+
+function removeMatchupHero(cat, idx) {
+  if (!editMatchup) return;
+  editMatchup[cat].splice(idx, 1);
+  redrawMatchupEditor();
+}
+
+function openMatchupPicker(cat, slotIdx) {
+  matchupPickerCategory = cat;
+  matchupPickerSlotIdx = slotIdx;
+  const catObj = MATCHUP_CATS.find(c => c.key === cat);
+  const catLabel = catObj ? catObj.label : cat;
+  const action = slotIdx === null ? `Add to ${catLabel}` : `Replace in ${catLabel}`;
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'matchup-picker-backdrop';
+  backdrop.id = 'matchup-picker-backdrop';
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeMatchupPicker(); });
+
+  backdrop.innerHTML = `
+    <div class="matchup-picker-modal">
+      <div class="matchup-picker-header">
+        <span class="matchup-picker-title">${esc(action)}</span>
+        <button class="matchup-picker-close" onclick="closeMatchupPicker()">✕</button>
+      </div>
+      <input class="matchup-picker-search" id="matchup-picker-search" placeholder="Search heroes…" autocomplete="off" oninput="filterMatchupPicker(this.value)">
+      <div class="matchup-picker-list" id="matchup-picker-list"></div>
+    </div>`;
+
+  document.body.appendChild(backdrop);
+  renderMatchupPickerList(allHeroes);
+  setTimeout(() => { const el = document.getElementById('matchup-picker-search'); if (el) el.focus(); }, 0);
+}
+
+function closeMatchupPicker() {
+  const el = document.getElementById('matchup-picker-backdrop');
+  if (el) el.remove();
+  matchupPickerCategory = null;
+  matchupPickerSlotIdx = null;
+}
+
+function filterMatchupPicker(q) {
+  const lq = q.toLowerCase();
+  renderMatchupPickerList(lq ? allHeroes.filter(h => h.toLowerCase().includes(lq)) : allHeroes);
+}
+
+function renderMatchupPickerList(heroes) {
+  const el = document.getElementById('matchup-picker-list');
+  if (!el) return;
+  el.innerHTML = heroes.map(h => {
+    const p = getPortrait(h);
+    return `<div class="matchup-picker-item" data-hero="${esc(h)}" onclick="selectMatchupHero(this.dataset.hero)">
+      ${p ? `<img src="${esc(p)}" alt="" onerror="this.style.display='none'">` : `<div style="width:44px;height:38px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);flex-shrink:0"></div>`}
+      <span class="matchup-picker-item-name">${esc(h)}</span>
+    </div>`;
+  }).join('');
+}
+
+function selectMatchupHero(heroName) {
+  if (!matchupPickerCategory || !editMatchup) return;
+  if (matchupPickerSlotIdx === null) {
+    editMatchup[matchupPickerCategory].push(heroName);
+  } else {
+    editMatchup[matchupPickerCategory][matchupPickerSlotIdx] = heroName;
+  }
+  closeMatchupPicker();
+  redrawMatchupEditor();
+}
+
+async function saveMatchupChanges() {
+  const btn = document.getElementById('matchup-save-btn');
+  const status = document.getElementById('matchup-save-status');
+  btn.disabled = true;
+  status.className = 'save-status loading';
+  status.textContent = 'Saving…';
+  try {
+    const res = await fetch('/api/save-matchup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ heroName: selectedHero, matchup: editMatchup }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      status.className = 'save-status err';
+      status.textContent = data.error || 'Save failed';
+      btn.disabled = false;
+      return;
+    }
+    HERO_MATCHUPS_DATA[selectedHero] = {
+      countered_by: [...editMatchup.countered_by],
+      counters: [...editMatchup.counters],
+      good_with: [...editMatchup.good_with],
+    };
+    originalMatchup = {
+      countered_by: [...editMatchup.countered_by],
+      counters: [...editMatchup.counters],
+      good_with: [...editMatchup.good_with],
+    };
+    status.className = 'save-status ok';
+    status.textContent = '✓ Saved! Redeploying (~30s)…';
+    redrawMatchupEditor();
+    setTimeout(() => { status.textContent = ''; }, 5000);
+  } catch {
+    status.className = 'save-status err';
+    status.textContent = 'Network error — check your connection';
+    btn.disabled = false;
+  }
+}
+
+// ── Hero stats load + render + save ───────────────────────
+async function loadHeroStatsData() {
+  try {
+    const res = await fetch('/hero_stats.js?t=' + Date.now());
+    const text = await res.text();
+    HERO_STATS_DATA = new Function(text + '\nreturn HERO_STATS;')();
+  } catch {}
+}
+
+function renderStatsEditor(heroName) {
+  document.getElementById('stats-save-area').style.display = 'flex';
+  const raw = HERO_STATS_DATA[heroName];
+  if (!raw) {
+    document.getElementById('stats-editor-area').innerHTML = '<div class="placeholder"><span>◈</span>No stat data found for this hero</div>';
+    return;
+  }
+
+  originalStats = { ...raw };
+  editStats = { ...raw };
+
+  let html = '';
+
+  // Attr row
+  const attrFields = STAT_FIELDS.filter(f => f.group === 'attrs');
+  html += `<div class="stats-section-label">Attributes</div>`;
+  html += `<div class="stats-attr-grid">`;
+  for (const f of attrFields) {
+    const val = editStats[f.key] || '';
+    html += `<div class="stat-field" id="stat-field-${f.key}">
+      <span class="stat-field-label ${f.cls}">${f.label}</span>
+      <input class="stat-field-input" value="${esc(val)}" placeholder="${f.hint}" oninput="statFieldChanged('${f.key}',this.value)">
+    </div>`;
+  }
+  html += `</div>`;
+
+  // Combat row
+  const combatFields = STAT_FIELDS.filter(f => f.group === 'combat');
+  html += `<div class="stats-section-label" style="margin-top:10px">Combat Stats</div>`;
+  html += `<div class="stats-combat-grid">`;
+  for (const f of combatFields) {
+    const val = editStats[f.key] || '';
+    html += `<div class="stat-field" id="stat-field-${f.key}">
+      <span class="stat-field-label">${f.label}</span>
+      <input class="stat-field-input" value="${esc(val)}" placeholder="${f.hint}" oninput="statFieldChanged('${f.key}',this.value)">
+    </div>`;
+  }
+  html += `</div>`;
+
+  // Diff summary
+  html += `<div class="diff-summary" id="stats-diff" style="margin-top:14px"><div class="diff-title">No changes yet</div><div class="diff-list"><span class="no-changes">Edit values above — changes will appear here</span></div></div>`;
+
+  document.getElementById('stats-editor-area').innerHTML = html;
+  updateStatsSaveBtn();
+}
+
+function statFieldChanged(key, value) {
+  if (!editStats) return;
+  editStats[key] = value;
+  const changed = value !== (originalStats[key] ?? '');
+  const fieldEl = document.getElementById(`stat-field-${key}`);
+  if (fieldEl) fieldEl.classList.toggle('is-changed', changed);
+  updateStatsDiff();
+  updateStatsSaveBtn();
+}
+
+function updateStatsDiff() {
+  const diffs = [];
+  for (const f of STAT_FIELDS) {
+    const edited = editStats?.[f.key] ?? '';
+    const orig   = originalStats?.[f.key] ?? '';
+    if (edited !== orig) diffs.push({ label: f.label, from: orig, to: edited });
+  }
+  const el = document.getElementById('stats-diff'); if (!el) return;
+  if (!diffs.length) {
+    el.innerHTML = '<div class="diff-title">No changes yet</div><div class="diff-list"><span class="no-changes">Edit values above — changes will appear here</span></div>';
+  } else {
+    let html = `<div class="diff-title">${diffs.length} pending change${diffs.length!==1?'s':''}</div><div class="diff-list">`;
+    html += diffs.map(d => `<div class="diff-item"><strong>${esc(d.label)}</strong>: <span class="diff-from">${esc(d.from)}</span> → <span class="diff-to">${esc(d.to)}</span></div>`).join('');
+    el.innerHTML = html + '</div>';
+  }
+}
+
+function hasStatsChanges() {
+  if (!editStats || !originalStats) return false;
+  for (const f of STAT_FIELDS) {
+    if ((editStats[f.key] ?? '') !== (originalStats[f.key] ?? '')) return true;
+  }
+  return false;
+}
+function updateStatsSaveBtn() { const b = document.getElementById('stats-save-btn'); if (b) b.disabled = !hasStatsChanges(); }
+
+async function saveStatsChanges() {
+  const btn = document.getElementById('stats-save-btn');
+  const status = document.getElementById('stats-save-status');
+  btn.disabled = true;
+  status.className = 'save-status loading';
+  status.textContent = 'Saving…';
+
+  const changes = {};
+  for (const f of STAT_FIELDS) {
+    const edited = editStats?.[f.key] ?? '';
+    if (edited !== (originalStats?.[f.key] ?? '')) changes[f.key] = edited;
+  }
+  if (!Object.keys(changes).length) { btn.disabled = false; status.textContent = ''; return; }
+
+  try {
+    const res = await fetch('/api/save-stats', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ heroName: selectedHero, stats: changes }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      status.className = 'save-status err';
+      status.textContent = data.error || 'Save failed';
+      btn.disabled = false;
+      return;
+    }
+    // Update local state
+    Object.assign(originalStats, changes);
+    Object.assign(HERO_STATS_DATA[selectedHero], changes);
+    // Clear changed highlights
+    for (const key of Object.keys(changes)) {
+      const fieldEl = document.getElementById(`stat-field-${key}`);
+      if (fieldEl) fieldEl.classList.remove('is-changed');
+    }
+    updateStatsDiff();
+    status.className = 'save-status ok';
+    status.textContent = '✓ Saved! Redeploying (~30s)…';
+    setTimeout(() => { status.textContent = ''; updateStatsSaveBtn(); }, 5000);
   } catch {
     status.className = 'save-status err';
     status.textContent = 'Network error — check your connection';
